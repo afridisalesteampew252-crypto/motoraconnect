@@ -30,93 +30,91 @@ export default function Navbar() {
     <>
       <nav
         className={`fixed top-0 w-full z-40 transition-all duration-300 ${
-          hasScrolled ? 'border-b border-surface-200/80' : ''
+          hasScrolled
+            ? 'bg-surface-950/90 backdrop-blur-xl border-b border-surface-800/80'
+            : 'bg-transparent'
         }`}
       >
-        <div className="bg-white/80 backdrop-blur-xl">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-20">
-              <Link
-                to="/"
-                className="font-display text-2xl font-bold bg-gradient-to-r from-brand-600 to-accent-500 bg-clip-text text-transparent hover:opacity-80 transition-opacity"
-              >
-                Motoraconnect
-              </Link>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-20">
+            <Link
+              to="/"
+              className="font-display text-xl font-bold text-white hover:opacity-80 transition-opacity tracking-tight"
+            >
+              Motoraconnect
+            </Link>
 
-              <div className="hidden md:flex items-center gap-8">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.path}
-                    to={link.path}
-                    className={`font-medium transition-colors duration-200 relative group ${
+            <div className="hidden md:flex items-center gap-8">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={`font-medium text-sm transition-colors duration-200 relative group ${
+                    location.pathname === link.path
+                      ? 'text-white'
+                      : 'text-surface-400 hover:text-white'
+                  }`}
+                >
+                  {link.name}
+                  <span
+                    className={`absolute -bottom-1 left-0 h-px bg-emerald-400 transition-all duration-300 ${
                       location.pathname === link.path
-                        ? 'text-brand-600'
-                        : 'text-surface-700 hover:text-brand-600'
+                        ? 'w-full'
+                        : 'w-0 group-hover:w-full'
                     }`}
-                  >
-                    {link.name}
-                    <span
-                      className={`absolute bottom-0 left-0 h-0.5 bg-brand-600 transition-all duration-300 ${
-                        location.pathname === link.path
-                          ? 'w-full'
-                          : 'w-0 group-hover:w-full'
-                      }`}
-                    />
-                  </Link>
-                ))}
-              </div>
-
-              <Link
-                to="/consultation"
-                className="hidden md:inline-flex btn-accent px-5 py-2.5 text-sm"
-              >
-                Book Consultation
-              </Link>
-
-              <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="md:hidden p-2 text-surface-800 hover:text-brand-600 transition-colors"
-                aria-label="Toggle menu"
-              >
-                {isOpen ? <X size={24} /> : <Menu size={24} />}
-              </button>
+                  />
+                </Link>
+              ))}
             </div>
+
+            <Link
+              to="/consultation"
+              className="hidden md:inline-flex items-center gap-2 bg-white text-surface-900 font-semibold text-sm px-4 py-2 rounded-lg hover:bg-surface-100 transition-colors"
+            >
+              Book Consultation
+            </Link>
+
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="md:hidden p-2 text-surface-400 hover:text-white transition-colors"
+              aria-label="Toggle menu"
+            >
+              {isOpen ? <X size={22} /> : <Menu size={22} />}
+            </button>
           </div>
         </div>
       </nav>
 
-      {/* Mobile overlay */}
+      {/* Mobile menu */}
       <div
         className={`fixed inset-0 z-30 md:hidden transition-all duration-300 ${
           isOpen ? 'visible' : 'invisible'
         }`}
       >
         <div
-          className={`absolute inset-0 bg-black/20 backdrop-blur-sm transition-opacity duration-300 ${
+          className={`absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${
             isOpen ? 'opacity-100' : 'opacity-0'
           }`}
           onClick={() => setIsOpen(false)}
         />
         <div
-          className={`absolute top-20 left-0 right-0 bg-white/95 backdrop-blur-xl border-b border-surface-200 transition-all duration-300 ${
+          className={`absolute top-20 left-0 right-0 bg-surface-900/95 backdrop-blur-xl border-b border-surface-800 transition-all duration-300 ${
             isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
           }`}
         >
-          <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="max-w-7xl mx-auto px-4 py-6">
             <div className="flex flex-col gap-1">
               {navLinks.map((link, i) => (
                 <Link
                   key={link.path}
                   to={link.path}
                   onClick={() => setIsOpen(false)}
-                  className={`py-3 px-4 rounded-xl font-medium text-lg transition-all duration-200 ${
+                  className={`py-3 px-4 rounded-xl font-medium transition-all duration-200 ${
                     location.pathname === link.path
-                      ? 'text-brand-600 bg-brand-50'
-                      : 'text-surface-800 hover:text-brand-600 hover:bg-surface-50'
+                      ? 'text-white bg-surface-800'
+                      : 'text-surface-400 hover:text-white hover:bg-surface-800/50'
                   }`}
-                  style={{
-                    transitionDelay: isOpen ? `${i * 40}ms` : '0ms',
-                  }}
+                  style={{ transitionDelay: isOpen ? `${i * 40}ms` : '0ms' }}
                 >
                   {link.name}
                 </Link>
@@ -124,10 +122,7 @@ export default function Navbar() {
               <Link
                 to="/consultation"
                 onClick={() => setIsOpen(false)}
-                className="btn-accent text-center mt-4"
-                style={{
-                  transitionDelay: isOpen ? `${navLinks.length * 40}ms` : '0ms',
-                }}
+                className="mt-4 bg-white text-surface-900 font-semibold text-center py-3 px-4 rounded-xl hover:bg-surface-100 transition-colors"
               >
                 Book Consultation
               </Link>

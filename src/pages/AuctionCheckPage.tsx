@@ -1,28 +1,20 @@
 import { useState } from 'react';
-import { Shield, Upload, CheckCircle, AlertTriangle, Info, FileText } from 'lucide-react';
+import { Shield, Upload, CheckCircle, Info, FileText, Terminal, AlertTriangle } from 'lucide-react';
 
-interface GradeInfo {
-  grade: string;
-  label: string;
-  color: string;
-  bgColor: string;
-  description: string;
-}
-
-const exteriorGrades: GradeInfo[] = [
-  { grade: '5', label: 'Excellent', color: 'text-emerald-700', bgColor: 'bg-emerald-50', description: 'Like new condition. Minimal to no wear.' },
-  { grade: '4.5', label: 'Very Good', color: 'text-brand-700', bgColor: 'bg-brand-50', description: 'Minor scratches/dents. Very well maintained.' },
-  { grade: '4', label: 'Good', color: 'text-sky-700', bgColor: 'bg-sky-50', description: 'Light scratches, small dents. Good overall condition.' },
-  { grade: '3.5', label: 'Average', color: 'text-amber-700', bgColor: 'bg-amber-50', description: 'Normal wear for age. Some repairs may be needed.' },
-  { grade: '3', label: 'Below Average', color: 'text-orange-700', bgColor: 'bg-orange-50', description: 'Noticeable wear. Multiple repairs likely.' },
-  { grade: '2', label: 'Poor', color: 'text-red-700', bgColor: 'bg-red-50', description: 'Significant damage or heavy wear. Major repairs needed.' },
+const exteriorGrades = [
+  { grade: '5', label: 'Excellent', color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20', description: 'Like new condition. Minimal to no wear.' },
+  { grade: '4.5', label: 'Very Good', color: 'text-brand-400', bg: 'bg-brand-500/10 border-brand-500/20', description: 'Minor scratches/dents. Very well maintained.' },
+  { grade: '4', label: 'Good', color: 'text-sky-400', bg: 'bg-sky-500/10 border-sky-500/20', description: 'Light scratches, small dents. Good overall.' },
+  { grade: '3.5', label: 'Average', color: 'text-amber-400', bg: 'bg-amber-500/10 border-amber-500/20', description: 'Normal wear for age. Some repairs may be needed.' },
+  { grade: '3', label: 'Below Average', color: 'text-orange-400', bg: 'bg-orange-500/10 border-orange-500/20', description: 'Noticeable wear. Multiple repairs likely.' },
+  { grade: '2', label: 'Poor', color: 'text-red-400', bg: 'bg-red-500/10 border-red-500/20', description: 'Significant damage. Major repairs needed.' },
 ];
 
-const interiorGrades: GradeInfo[] = [
-  { grade: 'A', label: 'Excellent', color: 'text-emerald-700', bgColor: 'bg-emerald-50', description: 'Like new. Minimal wear on seats and trim.' },
-  { grade: 'B', label: 'Very Good', color: 'text-brand-700', bgColor: 'bg-brand-50', description: 'Light wear. Clean and well-kept interior.' },
-  { grade: 'C', label: 'Average', color: 'text-amber-700', bgColor: 'bg-amber-50', description: 'Normal wear for mileage. Some stains or minor damage.' },
-  { grade: 'D', label: 'Below Average', color: 'text-red-700', bgColor: 'bg-red-50', description: 'Heavy wear. Cigarette burns, stains, or damage.' },
+const interiorGrades = [
+  { grade: 'A', label: 'Excellent', color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20', description: 'Like new. Minimal wear on seats and trim.' },
+  { grade: 'B', label: 'Very Good', color: 'text-brand-400', bg: 'bg-brand-500/10 border-brand-500/20', description: 'Light wear. Clean and well-kept interior.' },
+  { grade: 'C', label: 'Average', color: 'text-amber-400', bg: 'bg-amber-500/10 border-amber-500/20', description: 'Normal wear for mileage. Some stains or minor damage.' },
+  { grade: 'D', label: 'Below Average', color: 'text-red-400', bg: 'bg-red-500/10 border-red-500/20', description: 'Heavy wear. Burns, stains, or damage.' },
 ];
 
 const auctionMarks = [
@@ -39,10 +31,10 @@ const auctionMarks = [
   { mark: 'X', meaning: 'Needs replacement', severity: 'high' },
 ];
 
-function getSeverityColor(severity: string) {
-  if (severity === 'low') return 'bg-emerald-100 text-emerald-700';
-  if (severity === 'medium') return 'bg-amber-100 text-amber-700';
-  return 'bg-red-100 text-red-700';
+function severityStyle(s: string) {
+  if (s === 'low') return 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/20';
+  if (s === 'medium') return 'bg-amber-500/15 text-amber-400 border border-amber-500/20';
+  return 'bg-red-500/15 text-red-400 border border-red-500/20';
 }
 
 export default function AuctionCheckPage() {
@@ -55,150 +47,148 @@ export default function AuctionCheckPage() {
   }
 
   return (
-    <div className="min-h-screen bg-surface-50">
+    <div className="min-h-screen bg-surface-950">
       {/* Header */}
-      <div className="bg-gradient-to-br from-surface-900 to-brand-950 pt-12 pb-20">
-        <div className="container-wide">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-display font-bold text-white mb-4">
+      <div className="page-header">
+        <div className="relative z-10 container-wide">
+          <div className="flex items-center gap-3 mb-4">
+            <Terminal className="w-4 h-4 text-emerald-400" />
+            <span className="text-emerald-400 font-mono text-sm">// auction_verification</span>
+          </div>
+          <h1 className="text-4xl sm:text-5xl font-display font-bold text-white mb-4 tracking-tight">
             Auction Sheet Checker
           </h1>
-          <p className="text-surface-300 text-lg max-w-2xl">
-            Submit a Japanese auction sheet for expert verification. We check for hidden damage, grade accuracy, and provide a detailed condition report.
+          <p className="text-surface-400 text-lg max-w-2xl">
+            Submit an auction sheet for expert verification. We check for hidden damage, grade accuracy, and provide a detailed condition report.
           </p>
         </div>
       </div>
 
-      <div className="container-wide -mt-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="container-wide py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Submit form */}
           <div className="lg:col-span-1">
-            <div className="card p-8">
+            <div className="bg-surface-900/50 border border-surface-800 rounded-2xl p-6 sticky top-28">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center">
-                  <Shield className="w-5 h-5 text-brand-600" />
+                <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
+                  <Shield className="w-4 h-4 text-emerald-400" />
                 </div>
-                <h2 className="text-xl font-semibold text-surface-900">Verify an Auction Sheet</h2>
+                <h2 className="text-lg font-semibold text-white">Verify Auction Sheet</h2>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <div>
-                  <label className="label-field">Auction Lot / Reference Number</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. USS-12345 or lot number"
-                    value={auctionId}
-                    onChange={(e) => setAuctionId(e.target.value)}
-                    className="input-field"
-                  />
-                </div>
-
-                <div>
-                  <label className="label-field">Upload Auction Sheet Image</label>
-                  <div className="border-2 border-dashed border-surface-200 rounded-xl p-8 text-center hover:border-brand-400 transition-colors cursor-pointer">
-                    <Upload className="w-8 h-8 text-surface-400 mx-auto mb-2" />
-                    <p className="text-sm text-surface-500">
-                      Click or drag to upload
-                    </p>
-                    <p className="text-xs text-surface-400 mt-1">
-                      PNG, JPG up to 10MB
-                    </p>
+              {submitted ? (
+                <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <CheckCircle className="w-5 h-5 text-emerald-400" />
+                    <span className="font-semibold text-emerald-400">Request Submitted</span>
                   </div>
-                </div>
-
-                <div>
-                  <label className="label-field">Additional Notes</label>
-                  <textarea
-                    rows={3}
-                    placeholder="Any specific concerns or questions about this vehicle..."
-                    className="input-field resize-none"
-                  />
-                </div>
-
-                <button type="submit" className="btn-primary w-full justify-center">
-                  <Shield className="w-5 h-5" />
-                  Request Verification
-                </button>
-
-                <p className="text-xs text-surface-400 text-center">
-                  Verification typically takes 24-48 hours. You'll receive results via email.
-                </p>
-              </form>
-
-              {submitted && (
-                <div className="mt-4 bg-emerald-50 border border-emerald-200 rounded-xl p-4">
-                  <div className="flex items-center gap-2 mb-1">
-                    <CheckCircle className="w-5 h-5 text-emerald-600" />
-                    <span className="font-medium text-emerald-800">Request Submitted</span>
-                  </div>
-                  <p className="text-sm text-emerald-700">
-                    We'll verify the auction sheet for lot {auctionId} and send you a detailed report.
+                  <p className="text-sm text-emerald-200/70">
+                    We'll verify lot <span className="font-mono">{auctionId}</span> and send you a detailed report within 24-48 hours.
                   </p>
+                  <button onClick={() => { setSubmitted(false); setAuctionId(''); }} className="mt-4 text-sm text-emerald-400 font-mono hover:text-emerald-300">
+                    submit_another()
+                  </button>
                 </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <label className="label-field">Auction Lot / Reference Number</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. USS-12345"
+                      value={auctionId}
+                      onChange={(e) => setAuctionId(e.target.value)}
+                      className="input-field"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="label-field">Upload Auction Sheet</label>
+                    <div className="border-2 border-dashed border-surface-700 rounded-xl p-6 text-center hover:border-emerald-500/50 transition-colors cursor-pointer">
+                      <Upload className="w-7 h-7 text-surface-500 mx-auto mb-2" />
+                      <p className="text-sm text-surface-400">Click or drag to upload</p>
+                      <p className="text-xs text-surface-600 mt-1 font-mono">PNG, JPG up to 10MB</p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="label-field">Additional Notes</label>
+                    <textarea
+                      rows={3}
+                      placeholder="Any specific concerns..."
+                      className="input-field resize-none"
+                    />
+                  </div>
+
+                  <button type="submit" className="btn-primary w-full justify-center">
+                    <Shield className="w-4 h-4" />
+                    Request Verification
+                  </button>
+                  <p className="text-xs text-surface-600 text-center font-mono">24-48 hour turnaround</p>
+                </form>
               )}
             </div>
           </div>
 
           {/* Reference guide */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Exterior grades */}
-            <div className="card p-8">
+          <div className="lg:col-span-2 space-y-5">
+            {/* Grades */}
+            <div className="bg-surface-900/50 border border-surface-800 rounded-2xl p-6">
               <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center">
-                  <FileText className="w-5 h-5 text-brand-600" />
+                <div className="w-9 h-9 rounded-xl bg-brand-500/10 border border-brand-500/20 flex items-center justify-center">
+                  <FileText className="w-4 h-4 text-brand-400" />
                 </div>
-                <h2 className="text-xl font-semibold text-surface-900">Understanding Auction Grades</h2>
+                <h2 className="text-lg font-semibold text-white">Understanding Auction Grades</h2>
               </div>
 
-              <h3 className="font-semibold text-surface-900 mb-4">Exterior Grades</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
+              <h3 className="text-sm font-mono text-surface-400 mb-3">exterior_grades</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
                 {exteriorGrades.map((g) => (
-                  <div key={g.grade} className={`${g.bgColor} rounded-xl p-4`}>
+                  <div key={g.grade} className={`border rounded-xl p-3.5 ${g.bg}`}>
                     <div className="flex items-center gap-2 mb-1">
-                      <span className={`text-lg font-bold ${g.color}`}>{g.grade}</span>
+                      <span className={`text-lg font-bold font-mono ${g.color}`}>{g.grade}</span>
                       <span className={`text-sm font-medium ${g.color}`}>{g.label}</span>
                     </div>
-                    <p className="text-sm text-surface-600">{g.description}</p>
+                    <p className="text-sm text-surface-400">{g.description}</p>
                   </div>
                 ))}
               </div>
 
-              <h3 className="font-semibold text-surface-900 mb-4">Interior Grades</h3>
+              <h3 className="text-sm font-mono text-surface-400 mb-3">interior_grades</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {interiorGrades.map((g) => (
-                  <div key={g.grade} className={`${g.bgColor} rounded-xl p-4`}>
+                  <div key={g.grade} className={`border rounded-xl p-3.5 ${g.bg}`}>
                     <div className="flex items-center gap-2 mb-1">
-                      <span className={`text-lg font-bold ${g.color}`}>{g.grade}</span>
+                      <span className={`text-lg font-bold font-mono ${g.color}`}>{g.grade}</span>
                       <span className={`text-sm font-medium ${g.color}`}>{g.label}</span>
                     </div>
-                    <p className="text-sm text-surface-600">{g.description}</p>
+                    <p className="text-sm text-surface-400">{g.description}</p>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Auction marks */}
-            <div className="card p-8">
-              <h3 className="font-semibold text-surface-900 mb-4">Common Auction Sheet Marks</h3>
-              <p className="text-sm text-surface-500 mb-4">
-                Japanese auction sheets use specific marks to indicate damage types and severity on a vehicle diagram.
-              </p>
+            {/* Marks table */}
+            <div className="bg-surface-900/50 border border-surface-800 rounded-2xl p-6">
+              <h3 className="text-base font-semibold text-white mb-2">Common Auction Sheet Marks</h3>
+              <p className="text-sm text-surface-500 font-mono mb-4">damage_marks_reference</p>
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-surface-200">
-                      <th className="text-left py-3 px-4 text-sm font-semibold text-surface-900">Mark</th>
-                      <th className="text-left py-3 px-4 text-sm font-semibold text-surface-900">Meaning</th>
-                      <th className="text-left py-3 px-4 text-sm font-semibold text-surface-900">Severity</th>
+                    <tr className="border-b border-surface-800">
+                      <th className="text-left py-2 px-3 text-xs font-mono text-surface-500">mark</th>
+                      <th className="text-left py-2 px-3 text-xs font-mono text-surface-500">meaning</th>
+                      <th className="text-left py-2 px-3 text-xs font-mono text-surface-500">severity</th>
                     </tr>
                   </thead>
                   <tbody>
                     {auctionMarks.map((m) => (
-                      <tr key={m.mark} className="border-b border-surface-100">
-                        <td className="py-3 px-4 font-mono font-semibold text-surface-900">{m.mark}</td>
-                        <td className="py-3 px-4 text-sm text-surface-600">{m.meaning}</td>
-                        <td className="py-3 px-4">
-                          <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${getSeverityColor(m.severity)}`}>
-                            {m.severity.charAt(0).toUpperCase() + m.severity.slice(1)}
+                      <tr key={m.mark} className="border-b border-surface-800/50 hover:bg-surface-800/30 transition-colors">
+                        <td className="py-2.5 px-3 font-mono font-bold text-white">{m.mark}</td>
+                        <td className="py-2.5 px-3 text-sm text-surface-400">{m.meaning}</td>
+                        <td className="py-2.5 px-3">
+                          <span className={`text-xs font-mono px-2 py-0.5 rounded-lg ${severityStyle(m.severity)}`}>
+                            {m.severity}
                           </span>
                         </td>
                       </tr>
@@ -209,22 +199,22 @@ export default function AuctionCheckPage() {
             </div>
 
             {/* Tips */}
-            <div className="card p-8">
+            <div className="bg-surface-900/50 border border-surface-800 rounded-2xl p-6">
               <div className="flex items-center gap-3 mb-4">
-                <Info className="w-5 h-5 text-brand-600" />
-                <h3 className="font-semibold text-surface-900">Verification Tips</h3>
+                <Info className="w-5 h-5 text-brand-400" />
+                <h3 className="font-semibold text-white">Verification Tips</h3>
               </div>
               <div className="space-y-3">
                 {[
                   'Always request the original Japanese auction sheet, not a translated version',
-                  'Check if the grade matches the damage marks shown on the diagram',
-                  'Look for "W" marks indicating panel replacements - these suggest accident history',
+                  'Check if the grade matches the damage marks shown on the vehicle diagram',
+                  '"W" marks indicate panel replacements — these suggest accident history',
                   'Verify the odometer reading against the mileage grade',
                   'Grade 3.5 and below vehicles often have hidden issues not visible in photos',
                 ].map((tip, i) => (
                   <div key={i} className="flex gap-3 items-start">
-                    <CheckCircle className="w-4 h-4 text-brand-500 shrink-0 mt-0.5" />
-                    <p className="text-sm text-surface-600">{tip}</p>
+                    <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                    <p className="text-sm text-surface-300">{tip}</p>
                   </div>
                 ))}
               </div>
@@ -232,8 +222,6 @@ export default function AuctionCheckPage() {
           </div>
         </div>
       </div>
-
-      <div className="h-16" />
     </div>
   );
 }
