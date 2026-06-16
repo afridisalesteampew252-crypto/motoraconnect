@@ -10,7 +10,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
           <div className="space-y-4">
             <h2 className="font-display text-2xl font-bold bg-gradient-to-r from-brand-400 to-brand-300 bg-clip-text text-transparent">
-              JDM Global
+              Motoraconnect
             </h2>
             <p className="text-surface-400 text-sm leading-relaxed">
               Helping you buy Japanese vehicles with confidence through honest advice, transparent pricing, and trusted referrals.
@@ -62,7 +62,7 @@ export default function Footer() {
             <div className="space-y-3">
               <div className="flex gap-3 items-start">
                 <Mail size={16} className="text-brand-400 mt-0.5 flex-shrink-0" />
-                <a href="mailto:info@jdmglobal.com" className="text-surface-400 hover:text-brand-300 transition-colors text-sm">info@jdmglobal.com</a>
+                <a href="mailto:hello@motoraconnect.com" className="text-surface-400 hover:text-brand-300 transition-colors text-sm">hello@motoraconnect.com</a>
               </div>
               <div className="flex gap-3 items-start">
                 <Phone size={16} className="text-brand-400 mt-0.5 flex-shrink-0" />
@@ -85,7 +85,7 @@ export default function Footer() {
 
         <div className="border-t border-surface-800 pt-8">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p className="text-surface-500 text-sm">&copy; {year} JDM Global. All rights reserved.</p>
+            <p className="text-surface-500 text-sm">&copy; {year} Motoraconnect. All rights reserved.</p>
             <p className="text-surface-600 text-sm">Made with passion for Japanese vehicles</p>
             <div className="flex gap-6 items-center">
               <a href="https://afriditrading.com/" target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-300 transition-colors text-sm flex items-center gap-1">

@@ -48,8 +48,8 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-surface-900">Email</h3>
-                  <a href="mailto:info@jdmglobal.com" className="text-sm text-brand-600 hover:text-brand-700">
-                    info@jdmglobal.com
+                  <a href="mailto:hello@motoraconnect.com" className="text-sm text-brand-600 hover:text-brand-700">
+                    hello@motoraconnect.com
                   </a>
                 </div>
               </div>

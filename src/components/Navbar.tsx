@@ -40,7 +40,7 @@ export default function Navbar() {
                 to="/"
                 className="font-display text-2xl font-bold bg-gradient-to-r from-brand-600 to-accent-500 bg-clip-text text-transparent hover:opacity-80 transition-opacity"
               >
-                JDM Global
+                Motoraconnect
               </Link>
 
               <div className="hidden md:flex items-center gap-8">

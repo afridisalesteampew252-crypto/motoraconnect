@@ -47,7 +47,7 @@ export default function AdminLayout() {
               <Globe className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h2 className="font-display font-bold text-lg">JDM Global</h2>
+              <h2 className="font-display font-bold text-lg">Motoraconnect</h2>
               <p className="text-xs text-surface-400">Admin Panel</p>
             </div>
           </div>

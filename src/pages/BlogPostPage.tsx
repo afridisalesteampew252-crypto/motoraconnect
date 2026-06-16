@@ -35,7 +35,7 @@ export default function BlogPostPage() {
 
   useEffect(() => {
     if (post) {
-      document.title = `${post.title} - JDM Global`;
+      document.title = `${post.title} - Motoraconnect`;
     }
   }, [post]);
 

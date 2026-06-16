@@ -48,7 +48,7 @@ export function LoginPage() {
           {/* Logo and Title */}
           <div className="mb-8 text-center">
             <h1 className="font-display text-3xl sm:text-4xl font-bold gradient-text mb-2">
-              JDM Global
+              Motoraconnect
             </h1>
             <p className="text-surface-400 text-sm">Admin Panel</p>
           </div>
@@ -120,7 +120,7 @@ export function LoginPage() {
           {/* Footer */}
           <div className="mt-6 pt-6 border-t border-surface-700">
             <p className="text-center text-xs text-surface-500">
-              This is a private admin panel for JDM Global staff only.
+              This is a private admin panel for Motoraconnect staff only.
             </p>
           </div>
         </div>
