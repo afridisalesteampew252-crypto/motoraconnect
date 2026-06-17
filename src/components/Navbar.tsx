@@ -73,7 +73,7 @@ export default function Navbar() {
               {user ? (
                 <div className="flex items-center gap-3">
                   <Link
-                    to="/admin"
+                    to="/dashboard"
                     className="inline-flex items-center gap-2 text-sm text-surface-400 hover:text-white transition-colors"
                   >
                     <User className="w-4 h-4" />
@@ -158,7 +158,7 @@ export default function Navbar() {
               {user ? (
                 <div className="flex items-center justify-between mt-3 pt-3 border-t border-surface-800">
                   <Link
-                    to="/admin"
+                    to="/dashboard"
                     onClick={() => setIsOpen(false)}
                     className="flex items-center gap-2 text-sm text-surface-400 hover:text-white transition-colors"
                   >

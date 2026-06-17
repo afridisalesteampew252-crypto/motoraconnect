@@ -10,10 +10,12 @@ import BlogPage from './pages/BlogPage';
 import BlogPostPage from './pages/BlogPostPage';
 import ConsultationPage from './pages/ConsultationPage';
 import ContactPage from './pages/ContactPage';
+import UserDashboardPage from './pages/Dashboard/DashboardPage';
+import { ProtectedRoute } from './components/ProtectedRoute';
 import AdminLayout from './admin/AdminLayout';
 import AdminGuard from './admin/AdminGuard';
 import { LoginPage } from './admin/pages/LoginPage';
-import DashboardPage from './admin/pages/DashboardPage';
+import AdminDashboardPage from './admin/pages/DashboardPage';
 import VehiclesAdminPage from './admin/pages/VehiclesAdminPage';
 import BlogAdminPage from './admin/pages/BlogAdminPage';
 import ConsultationsAdminPage from './admin/pages/ConsultationsAdminPage';
@@ -59,6 +61,14 @@ export default function App() {
             <Route path="/blog/:slug" element={<BlogPostPage />} />
             <Route path="/consultation" element={<ConsultationPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route 
+              path="/dashboard" 
+              element={
+                <ProtectedRoute>
+                  <UserDashboardPage />
+                </ProtectedRoute>
+              } 
+            />
 
             {/* Admin routes */}
             <Route path="/admin/login" element={<LoginPage />} />
@@ -70,7 +80,7 @@ export default function App() {
                 </AdminGuard>
               }
             >
-              <Route index element={<DashboardPage />} />
+              <Route index element={<AdminDashboardPage />} />
               <Route path="vehicles" element={<VehiclesAdminPage />} />
               <Route path="blog" element={<BlogAdminPage />} />
               <Route path="consultations" element={<ConsultationsAdminPage />} />
