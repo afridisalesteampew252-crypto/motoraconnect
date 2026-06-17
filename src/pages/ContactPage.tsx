@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabase';
-import { Mail, Phone, MapPin, Clock, Send, CheckCircle, Terminal } from 'lucide-react';
+import { Mail, MapPin, Clock, Send, CheckCircle, Terminal, MessageCircle, Facebook } from 'lucide-react';
 
 const contactInfo = [
-  { icon: Mail, label: 'Email', value: 'hello@motoraconnect.com', href: 'mailto:hello@motoraconnect.com', color: 'brand' },
-  { icon: Phone, label: 'Phone', value: '+92 (300) 123-4567', href: 'tel:+923001234567', color: 'emerald' },
-  { icon: MapPin, label: 'Location', value: 'Pakistan (Remote worldwide)', href: null, color: 'cyan' },
+  { icon: MessageCircle, label: 'WhatsApp', value: '+1 (555) 907-2666', href: 'https://wa.me/15559072666', color: 'emerald' },
+  { icon: Mail, label: 'Email', value: 'support@motoraconnect.com', href: 'mailto:support@motoraconnect.com', color: 'brand' },
+  { icon: Facebook, label: 'Facebook', value: 'Motoraconnect', href: 'https://facebook.com/motoraconnect', color: 'cyan' },
+  { icon: MapPin, label: 'Location', value: 'Pakistan (Remote worldwide)', href: null, color: 'amber' },
   { icon: Clock, label: 'Hours', value: 'Mon–Fri 9AM–6PM PKT · Sat 10AM–2PM', href: null, color: 'amber' },
 ];
 

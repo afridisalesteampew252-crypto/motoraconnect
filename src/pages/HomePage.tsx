@@ -3,7 +3,7 @@ import Services from '../components/Services';
 import FeaturedVehicles from '../components/FeaturedVehicles';
 import HowItWorks from '../components/HowItWorks';
 import { Link } from 'react-router-dom';
-import { ArrowRight, CheckCircle, Star, ExternalLink, Handshake, Terminal, Zap, Shield, Globe, ChevronRight, Code2, BarChart3, Search } from 'lucide-react';
+import { ArrowRight, CheckCircle, Star, Terminal, Zap, Shield, ChevronRight, Code2, BarChart3, Search } from 'lucide-react';
 
 const testimonials = [
   {
@@ -229,31 +229,6 @@ export default function HomePage() {
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Trusted Partner */}
-      <section className="section-padding bg-surface-950">
-        <div className="container-wide text-center">
-          <div className="inline-flex items-center gap-2 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-lg px-4 py-2 text-sm font-mono mb-6">
-            <Handshake className="w-4 h-4" />
-            trusted_partner
-          </div>
-          <h2 className="text-2xl sm:text-3xl font-display font-bold text-white mb-4">
-            Afridi Trading
-          </h2>
-          <p className="text-surface-400 max-w-xl mx-auto mb-6 text-sm leading-relaxed">
-            Our recommended exporter partner for seamless Japanese vehicle purchasing and shipping. Reliable service with proven track record.
-          </p>
-          <a
-            href="https://afriditrading.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-white text-surface-900 font-semibold px-6 py-3 rounded-xl hover:bg-surface-100 transition-all duration-200"
-          >
-            <ExternalLink className="w-4 h-4" />
-            Visit Afridi Trading
-          </a>
         </div>
       </section>
 
