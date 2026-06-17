@@ -13,6 +13,8 @@ import ContactPage from './pages/ContactPage';
 import UserDashboardPage from './pages/Dashboard/DashboardPage';
 import MessagesPage from './pages/Messaging/MessagesPage';
 import ChatPage from './pages/Messaging/ChatPage';
+import MarketplacePage from './pages/Marketplace/MarketplacePage';
+import ProfilePage from './pages/Profile/ProfilePage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import AdminLayout from './admin/AdminLayout';
 import AdminGuard from './admin/AdminGuard';
@@ -84,6 +86,22 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <ChatPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/marketplace" 
+              element={
+                <ProtectedRoute>
+                  <MarketplacePage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/profile" 
+              element={
+                <ProtectedRoute>
+                  <ProfilePage />
                 </ProtectedRoute>
               } 
             />

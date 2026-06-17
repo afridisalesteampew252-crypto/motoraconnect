@@ -1,5 +1,7 @@
-import { useState } from 'react';
-import { Shield, Upload, CheckCircle, Info, FileText, Terminal, AlertTriangle } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { Shield, Upload, CheckCircle, Info, FileText, Terminal, AlertTriangle, FileUp } from 'lucide-react';
+import { useAuthSafe } from '@/hooks/useAuth';
+import { submitAuctionVerification } from '@/services/auctionService';
 
 const exteriorGrades = [
   { grade: '5', label: 'Excellent', color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20', description: 'Like new condition. Minimal to no wear.' },
@@ -38,13 +40,39 @@ function severityStyle(s: string) {
 }
 
 export default function AuctionCheckPage() {
+  const auth = useAuthSafe();
   const [auctionId, setAuctionId] = useState('');
+  const [notes, setNotes] = useState('');
+  const [file, setFile] = useState<File | null>(null);
+  const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (auctionId.trim()) setSubmitted(true);
+    if (!auctionId.trim() || !auth?.user?.id) return;
+
+    setSubmitting(true);
+    try {
+      await submitAuctionVerification(auth.user.id, {
+        lotNumber: auctionId,
+        notes: notes,
+        sheetFile: file || undefined
+      });
+      setSubmitted(true);
+    } catch (error) {
+      console.error('Submission failed:', error);
+      alert('Failed to submit verification request. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
   }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-surface-950">
@@ -104,10 +132,32 @@ export default function AuctionCheckPage() {
 
                   <div>
                     <label className="label-field">Upload Auction Sheet</label>
-                    <div className="border-2 border-dashed border-surface-700 rounded-xl p-6 text-center hover:border-emerald-500/50 transition-colors cursor-pointer">
-                      <Upload className="w-7 h-7 text-surface-500 mx-auto mb-2" />
-                      <p className="text-sm text-surface-400">Click or drag to upload</p>
-                      <p className="text-xs text-surface-600 mt-1 font-mono">PNG, JPG up to 10MB</p>
+                    <input 
+                      type="file" 
+                      ref={fileInputRef} 
+                      onChange={handleFileChange} 
+                      className="hidden" 
+                      accept="image/*,application/pdf"
+                    />
+                    <div 
+                      onClick={() => fileInputRef.current?.click()}
+                      className={`border-2 border-dashed rounded-xl p-6 text-center transition-colors cursor-pointer ${
+                        file ? 'border-emerald-500 bg-emerald-500/5' : 'border-surface-700 hover:border-emerald-500/50'
+                      }`}
+                    >
+                      {file ? (
+                        <>
+                          <FileUp className="w-7 h-7 text-emerald-400 mx-auto mb-2" />
+                          <p className="text-sm text-emerald-200">{file.name}</p>
+                          <p className="text-xs text-emerald-500/60 mt-1 font-mono">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                        </>
+                      ) : (
+                        <>
+                          <Upload className="w-7 h-7 text-surface-500 mx-auto mb-2" />
+                          <p className="text-sm text-surface-400">Click or drag to upload</p>
+                          <p className="text-xs text-surface-600 mt-1 font-mono">PNG, JPG, PDF up to 10MB</p>
+                        </>
+                      )}
                     </div>
                   </div>
 
@@ -117,12 +167,22 @@ export default function AuctionCheckPage() {
                       rows={3}
                       placeholder="Any specific concerns..."
                       className="input-field resize-none"
+                      value={notes}
+                      onChange={(e) => setNotes(e.target.value)}
                     />
                   </div>
 
-                  <button type="submit" className="btn-primary w-full justify-center">
-                    <Shield className="w-4 h-4" />
-                    Request Verification
+                  <button 
+                    type="submit" 
+                    disabled={submitting || !auctionId}
+                    className={`btn-primary w-full justify-center ${submitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  >
+                    {submitting ? (
+                      <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                    ) : (
+                      <Shield className="w-4 h-4" />
+                    )}
+                    {submitting ? 'Submitting...' : 'Request Verification'}
                   </button>
                   <p className="text-xs text-surface-600 text-center font-mono">24-48 hour turnaround</p>
                 </form>

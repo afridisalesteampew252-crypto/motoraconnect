@@ -78,7 +78,7 @@ Building a vehicle export/import consulting SaaS platform with freemium model, m
 | HomePage | ✅ DONE | Hero, Features, Services, Pricing, Testimonials, CTA |
 | VehiclesPage | ✅ DONE | Search, Filter, Real DB data |
 | CalculatorPage | ✅ DONE | 6 countries, complete cost breakdown |
-| AuctionCheckPage | ⚠️ PARTIAL | Grade guide done, upload backend missing |
+| AuctionCheckPage | ✅ DONE | Grade guide + Upload Backend |
 | BlogPage + BlogPostPage | ✅ DONE | Category filter, slug routing, DB queries |
 | ConsultationPage | ✅ DONE | Package select, booking form, DB save |
 | ContactPage | ✅ DONE | WhatsApp, Email, Facebook, form, DB save |
@@ -88,10 +88,10 @@ Building a vehicle export/import consulting SaaS platform with freemium model, m
 | Admin Consultations | ✅ DONE | View details, status updates |
 | Admin Contacts | ✅ DONE | View details, delete |
 | Admin Payments | ⚠️ STUB | UI only, no Stripe |
-| Matching Service | ✅ DONE | Algorithm complete, no UI |
-| Search Service | ✅ DONE | Partially used by VehiclesPage |
-| Messaging Service | ✅ DONE | Backend complete, no UI |
-| Notification Service | ✅ DONE | Backend complete, no UI |
+| Matching Service | ✅ DONE | Algorithm + Marketplace UI |
+| Search Service | ✅ DONE | Used by Vehicles & Marketplace |
+| Messaging Service | ✅ DONE | Backend + Inbox/Chat UI |
+| Notification Service | ✅ DONE | Backend + Dropdown UI |
 | Edge Functions | ✅ DONE | add-admin function deployed |
 | Stripe Payments | ❌ MISSING | No SDK, no checkout, no webhooks |
 

@@ -51,7 +51,7 @@ const DashboardPage: React.FC = () => {
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
             <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
               <h2 className="text-lg font-bold text-gray-900">Recent Vehicle Matches</h2>
-              <Link to="/matches" className="text-blue-600 hover:text-blue-700 text-sm font-medium">View all</Link>
+              <Link to="/marketplace" className="text-blue-600 hover:text-blue-700 text-sm font-medium">View all</Link>
             </div>
             <div className="p-6">
               <div className="text-center py-8">
