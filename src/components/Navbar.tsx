@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, LogIn, LogOut, User } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 const navLinks = [
   { name: 'Home', path: '/' },
@@ -15,6 +16,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [hasScrolled, setHasScrolled] = useState(false);
   const location = useLocation();
+  const { user, signOut } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => setHasScrolled(window.scrollY > 0);
@@ -67,12 +69,39 @@ export default function Navbar() {
               ))}
             </div>
 
-            <Link
-              to="/consultation"
-              className="hidden md:inline-flex items-center gap-2 bg-white text-surface-900 font-semibold text-sm px-4 py-2 rounded-lg hover:bg-surface-100 transition-colors"
-            >
-              Book Consultation
-            </Link>
+            <div className="hidden md:flex items-center gap-3">
+              {user ? (
+                <div className="flex items-center gap-3">
+                  <Link
+                    to="/admin"
+                    className="inline-flex items-center gap-2 text-sm text-surface-400 hover:text-white transition-colors"
+                  >
+                    <User className="w-4 h-4" />
+                    <span className="max-w-[120px] truncate">{user.email}</span>
+                  </Link>
+                  <button
+                    onClick={signOut}
+                    className="inline-flex items-center gap-1.5 text-sm text-surface-500 hover:text-red-400 transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  to="/admin/login"
+                  className="inline-flex items-center gap-2 text-sm text-surface-400 hover:text-white border border-surface-700 px-3 py-1.5 rounded-lg hover:border-surface-600 transition-all duration-200"
+                >
+                  <LogIn className="w-3.5 h-3.5" />
+                  Login
+                </Link>
+              )}
+              <Link
+                to="/consultation"
+                className="inline-flex items-center gap-2 bg-white text-surface-900 font-semibold text-sm px-4 py-2 rounded-lg hover:bg-surface-100 transition-colors"
+              >
+                Book Consultation
+              </Link>
+            </div>
 
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -126,6 +155,34 @@ export default function Navbar() {
               >
                 Book Consultation
               </Link>
+              {user ? (
+                <div className="flex items-center justify-between mt-3 pt-3 border-t border-surface-800">
+                  <Link
+                    to="/admin"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center gap-2 text-sm text-surface-400 hover:text-white transition-colors"
+                  >
+                    <User className="w-4 h-4" />
+                    <span className="truncate max-w-[180px]">{user.email}</span>
+                  </Link>
+                  <button
+                    onClick={() => { signOut(); setIsOpen(false); }}
+                    className="flex items-center gap-1.5 text-sm text-surface-500 hover:text-red-400 transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Sign Out
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  to="/admin/login"
+                  onClick={() => setIsOpen(false)}
+                  className="flex items-center justify-center gap-2 mt-3 pt-3 border-t border-surface-800 text-sm text-surface-400 hover:text-white transition-colors"
+                >
+                  <LogIn className="w-4 h-4" />
+                  Admin Login
+                </Link>
+              )}
             </div>
           </div>
         </div>

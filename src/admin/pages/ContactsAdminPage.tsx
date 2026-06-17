@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
+import { Terminal, ChevronDown, ChevronUp, Trash2 } from 'lucide-react';
 
 interface ContactMessage {
   id: string;
@@ -17,24 +18,16 @@ export default function ContactsAdminPage() {
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchMessages();
-  }, []);
+  useEffect(() => { fetchMessages(); }, []);
 
   const fetchMessages = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('contacts')
-        .select('*')
-        .order('created_at', { ascending: false });
+      const { data, error } = await supabase.from('contacts').select('*').order('created_at', { ascending: false });
       if (error) throw error;
       setMessages(data || []);
-    } catch (error) {
-      console.error('Error fetching contacts:', error);
-    } finally {
-      setLoading(false);
-    }
+    } catch (error) { console.error('Error fetching contacts:', error); }
+    finally { setLoading(false); }
   };
 
   const deleteMessage = async (id: string) => {
@@ -42,139 +35,95 @@ export default function ContactsAdminPage() {
       setDeletingId(id);
       const { error } = await supabase.from('contacts').delete().eq('id', id);
       if (error) throw error;
-      setMessages(messages.filter((m) => m.id !== id));
+      setMessages(messages.filter(m => m.id !== id));
       setConfirmDeleteId(null);
-    } catch (error) {
-      console.error('Error deleting message:', error);
-    } finally {
-      setDeletingId(null);
-    }
+    } catch (error) { console.error('Error deleting message:', error); }
+    finally { setDeletingId(null); }
   };
 
-  const formatDate = (dateString: string): string => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    });
-  };
+  const formatDate = (dateString: string): string =>
+    new Date(dateString).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 
   if (loading) {
     return (
       <div className="p-6">
-        <div className="animate-pulse">
-          <div className="h-8 bg-surface-200 rounded w-1/4 mb-6" />
-          <div className="space-y-2">
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className="h-12 bg-surface-200 rounded" />
-            ))}
-          </div>
+        <div className="animate-pulse space-y-4">
+          <div className="h-8 bg-surface-800 rounded w-1/4" />
+          {[...Array(5)].map((_, i) => <div key={i} className="h-12 bg-surface-800 rounded" />)}
         </div>
       </div>
     );
   }
 
   return (
-    <div className="p-6">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold text-surface-900">Messages</h1>
-        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-brand-50 text-brand-700">
-          {messages.length}
-        </span>
+    <div>
+      <div className="flex items-center gap-3 mb-3">
+        <Terminal className="w-4 h-4 text-emerald-400" />
+        <span className="text-emerald-400 font-mono text-sm">// contacts</span>
+      </div>
+      <div className="flex items-center justify-between mb-8">
+        <h1 className="text-3xl font-display font-bold text-white">Messages</h1>
+        <span className="px-3 py-1 rounded-lg text-sm font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">{messages.length}</span>
       </div>
 
-      <div className="card overflow-hidden">
+      <div className="bg-surface-900/50 border border-surface-800 rounded-2xl overflow-hidden">
         {messages.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-surface-500 text-lg">No messages found</p>
-          </div>
+          <div className="text-center py-12"><p className="text-surface-500 font-mono">no_messages_found</p></div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-surface-50 border-b border-surface-200">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-surface-600 uppercase tracking-wider">Name</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-surface-600 uppercase tracking-wider">Email</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-surface-600 uppercase tracking-wider">Subject</th>
-                  <th className="hidden sm:table-cell px-6 py-3 text-left text-xs font-medium text-surface-600 uppercase tracking-wider">Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-surface-600 uppercase tracking-wider">Actions</th>
+              <thead>
+                <tr className="border-b border-surface-800">
+                  {['name', 'email', 'subject', 'date', 'actions'].map(h => (
+                    <th key={h} className="px-6 py-3 text-left text-xs font-mono text-surface-500">{h}</th>
+                  ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-surface-200">
+              <tbody>
                 {messages.map((msg) => (
                   <React.Fragment key={msg.id}>
                     <tr
-                      className="hover:bg-surface-50 cursor-pointer transition-colors"
+                      className="border-b border-surface-800/50 hover:bg-surface-800/30 cursor-pointer transition-colors"
                       onClick={() => setExpandedId(expandedId === msg.id ? null : msg.id)}
                     >
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-surface-900">{msg.name}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-surface-600">{msg.email}</td>
-                      <td className="px-6 py-4 text-sm text-surface-600 truncate max-w-xs">{msg.subject}</td>
-                      <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-sm text-surface-500">{formatDate(msg.created_at)}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm space-x-2">
-                        <button
-                          onClick={(e) => { e.stopPropagation(); setExpandedId(expandedId === msg.id ? null : msg.id); }}
-                          className="text-brand-600 hover:text-brand-800 font-medium"
-                        >
-                          {expandedId === msg.id ? 'Hide' : 'View'}
+                      <td className="px-6 py-4 text-sm text-white font-medium">{msg.name}</td>
+                      <td className="px-6 py-4 text-sm text-surface-400">{msg.email}</td>
+                      <td className="px-6 py-4 text-sm text-surface-400 truncate max-w-xs">{msg.subject}</td>
+                      <td className="hidden sm:table-cell px-6 py-4 text-sm text-surface-500 font-mono">{formatDate(msg.created_at)}</td>
+                      <td className="px-6 py-4 text-sm space-x-3">
+                        <button onClick={(e) => { e.stopPropagation(); setExpandedId(expandedId === msg.id ? null : msg.id); }} className="text-surface-400 hover:text-emerald-400 transition-colors">
+                          {expandedId === msg.id ? <ChevronUp className="w-4 h-4 inline" /> : <ChevronDown className="w-4 h-4 inline" />}
                         </button>
-                        <button
-                          onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(msg.id); }}
-                          className="text-red-600 hover:text-red-800 font-medium"
-                        >
-                          Delete
+                        <button onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(msg.id); }} className="text-surface-400 hover:text-red-400 transition-colors">
+                          <Trash2 className="w-4 h-4 inline" />
                         </button>
                       </td>
                     </tr>
                     {expandedId === msg.id && (
-                      <tr className="bg-surface-50 border-b-2 border-brand-200">
+                      <tr className="bg-surface-800/20 border-b-2 border-emerald-500/20">
                         <td colSpan={5} className="px-6 py-4">
                           <div className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <div>
-                                <h4 className="font-semibold text-surface-900">Name</h4>
-                                <p className="text-surface-700">{msg.name}</p>
-                              </div>
-                              <div>
-                                <h4 className="font-semibold text-surface-900">Email</h4>
-                                <p className="text-surface-700">{msg.email}</p>
-                              </div>
+                              <div><h4 className="text-sm font-semibold text-white font-mono mb-1">name</h4><p className="text-surface-400 text-sm">{msg.name}</p></div>
+                              <div><h4 className="text-sm font-semibold text-white font-mono mb-1">email</h4><p className="text-surface-400 text-sm">{msg.email}</p></div>
                             </div>
-                            <div>
-                              <h4 className="font-semibold text-surface-900">Subject</h4>
-                              <p className="text-surface-700">{msg.subject}</p>
-                            </div>
-                            <div>
-                              <h4 className="font-semibold text-surface-900 mb-2">Message</h4>
-                              <p className="text-surface-700 whitespace-pre-wrap">{msg.message}</p>
-                            </div>
-                            <div className="text-sm text-surface-500">
-                              Received: {new Date(msg.created_at).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                            <div><h4 className="text-sm font-semibold text-white font-mono mb-1">subject</h4><p className="text-surface-400 text-sm">{msg.subject}</p></div>
+                            <div><h4 className="text-sm font-semibold text-white font-mono mb-2">message</h4><p className="text-surface-400 text-sm whitespace-pre-wrap">{msg.message}</p></div>
+                            <div className="text-sm text-surface-500 font-mono">
+                              received: {new Date(msg.created_at).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                             </div>
                           </div>
                         </td>
                       </tr>
                     )}
                     {confirmDeleteId === msg.id && (
-                      <tr className="bg-red-50 border-b-2 border-red-200">
+                      <tr className="bg-red-500/5 border-b-2 border-red-500/20">
                         <td colSpan={5} className="px-6 py-4">
                           <div className="flex items-center justify-between">
-                            <p className="text-red-700 font-medium">Are you sure you want to delete this message?</p>
+                            <p className="text-red-400 font-medium text-sm">Are you sure you want to delete this message?</p>
                             <div className="space-x-2">
-                              <button
-                                onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(null); }}
-                                className="px-4 py-2 bg-surface-200 text-surface-800 rounded hover:bg-surface-300 font-medium"
-                                disabled={deletingId === msg.id}
-                              >
-                                Cancel
-                              </button>
-                              <button
-                                onClick={(e) => { e.stopPropagation(); deleteMessage(msg.id); }}
-                                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 font-medium disabled:opacity-50"
-                                disabled={deletingId === msg.id}
-                              >
-                                {deletingId === msg.id ? 'Deleting...' : 'Delete'}
-                              </button>
+                              <button onClick={(e) => { e.stopPropagation(); setConfirmDeleteId(null); }} className="px-4 py-1.5 bg-surface-800 text-surface-400 rounded-lg text-sm font-mono hover:bg-surface-700 transition-colors" disabled={deletingId === msg.id}>cancel</button>
+                              <button onClick={(e) => { e.stopPropagation(); deleteMessage(msg.id); }} className="px-4 py-1.5 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg text-sm font-mono hover:bg-red-500/20 transition-colors disabled:opacity-50" disabled={deletingId === msg.id}>{deletingId === msg.id ? 'deleting...' : 'delete'}</button>
                             </div>
                           </div>
                         </td>
