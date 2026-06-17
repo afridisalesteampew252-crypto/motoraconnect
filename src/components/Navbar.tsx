@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, LogIn, LogOut, User } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
+import NotificationDropdown from './Notifications/NotificationDropdown';
 
 const navLinks = [
   { name: 'Home', path: '/' },
@@ -72,6 +73,7 @@ export default function Navbar() {
             <div className="hidden md:flex items-center gap-3">
               {user ? (
                 <div className="flex items-center gap-3">
+                  <NotificationDropdown />
                   <Link
                     to="/dashboard"
                     className="inline-flex items-center gap-2 text-sm text-surface-400 hover:text-white transition-colors"

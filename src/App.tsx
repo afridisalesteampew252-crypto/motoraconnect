@@ -11,6 +11,8 @@ import BlogPostPage from './pages/BlogPostPage';
 import ConsultationPage from './pages/ConsultationPage';
 import ContactPage from './pages/ContactPage';
 import UserDashboardPage from './pages/Dashboard/DashboardPage';
+import MessagesPage from './pages/Messaging/MessagesPage';
+import ChatPage from './pages/Messaging/ChatPage';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import AdminLayout from './admin/AdminLayout';
 import AdminGuard from './admin/AdminGuard';
@@ -66,6 +68,22 @@ export default function App() {
               element={
                 <ProtectedRoute>
                   <UserDashboardPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/messages" 
+              element={
+                <ProtectedRoute>
+                  <MessagesPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/messages/:partnerId" 
+              element={
+                <ProtectedRoute>
+                  <ChatPage />
                 </ProtectedRoute>
               } 
             />

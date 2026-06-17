@@ -78,10 +78,10 @@ const DashboardPage: React.FC = () => {
                   </div>
                   <div className="flex-1">
                     <div className="flex justify-between">
-                      <h4 className="font-medium text-gray-900">John Doe</h4>
-                      <span className="text-xs text-gray-400">2h ago</span>
+                      <h4 className="font-medium text-gray-900">Support Team</h4>
+                      <span className="text-xs text-gray-400">Recently</span>
                     </div>
-                    <p className="text-sm text-gray-500 truncate">Is the 2022 Toyota Land Cruiser still available for viewing?</p>
+                    <p className="text-sm text-gray-500 truncate">Welcome to Motora Connect! Start by exploring our vehicle marketplace.</p>
                   </div>
                 </div>
               ))}
