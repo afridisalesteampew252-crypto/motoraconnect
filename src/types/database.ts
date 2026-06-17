@@ -1,0 +1,361 @@
+export type Database = {
+  public: {
+    Tables: {
+      users: {
+        Row: {
+          id: string;
+          email: string;
+          full_name: string;
+          phone: string | null;
+          subscription_tier: 'free' | 'pro' | 'premium';
+          profile_type: 'buyer' | 'seller' | 'both';
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          email: string;
+          full_name: string;
+          phone?: string | null;
+          subscription_tier?: 'free' | 'pro' | 'premium';
+          profile_type: 'buyer' | 'seller' | 'both';
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          email?: string;
+          full_name?: string;
+          phone?: string | null;
+          subscription_tier?: 'free' | 'pro' | 'premium';
+          profile_type?: 'buyer' | 'seller' | 'both';
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      subscriptions: {
+        Row: {
+          id: string;
+          user_id: string;
+          stripe_customer_id: string | null;
+          stripe_subscription_id: string | null;
+          stripe_product_id: string | null;
+          status: 'active' | 'past_due' | 'cancelled' | 'trialing';
+          current_period_start: string | null;
+          current_period_end: string | null;
+          cancel_at_period_end: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          stripe_customer_id?: string | null;
+          stripe_subscription_id?: string | null;
+          stripe_product_id?: string | null;
+          status: 'active' | 'past_due' | 'cancelled' | 'trialing';
+          current_period_start?: string | null;
+          current_period_end?: string | null;
+          cancel_at_period_end?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          stripe_customer_id?: string | null;
+          stripe_subscription_id?: string | null;
+          stripe_product_id?: string | null;
+          status?: 'active' | 'past_due' | 'cancelled' | 'trialing';
+          current_period_start?: string | null;
+          current_period_end?: string | null;
+          cancel_at_period_end?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      vehicles: {
+        Row: {
+          id: string;
+          user_id: string;
+          vin: string;
+          make: string;
+          model: string;
+          year: number;
+          color: string | null;
+          mileage: number | null;
+          condition: 'excellent' | 'good' | 'fair' | 'poor' | null;
+          price: number | null;
+          description: string | null;
+          is_listed: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          vin: string;
+          make: string;
+          model: string;
+          year: number;
+          color?: string | null;
+          mileage?: number | null;
+          condition?: 'excellent' | 'good' | 'fair' | 'poor' | null;
+          price?: number | null;
+          description?: string | null;
+          is_listed?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          vin?: string;
+          make?: string;
+          model?: string;
+          year?: number;
+          color?: string | null;
+          mileage?: number | null;
+          condition?: 'excellent' | 'good' | 'fair' | 'poor' | null;
+          price?: number | null;
+          description?: string | null;
+          is_listed?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      vehicle_searches: {
+        Row: {
+          id: string;
+          user_id: string;
+          make: string | null;
+          model: string | null;
+          min_year: number | null;
+          max_year: number | null;
+          min_price: number | null;
+          max_price: number | null;
+          condition: string | null;
+          search_name: string | null;
+          is_active: boolean;
+          last_matched_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          make?: string | null;
+          model?: string | null;
+          min_year?: number | null;
+          max_year?: number | null;
+          min_price?: number | null;
+          max_price?: number | null;
+          condition?: string | null;
+          search_name?: string | null;
+          is_active?: boolean;
+          last_matched_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          make?: string | null;
+          model?: string | null;
+          min_year?: number | null;
+          max_year?: number | null;
+          min_price?: number | null;
+          max_price?: number | null;
+          condition?: string | null;
+          search_name?: string | null;
+          is_active?: boolean;
+          last_matched_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      buyer_profiles: {
+        Row: {
+          id: string;
+          user_id: string;
+          preferred_makes: string[] | null;
+          budget_min: number | null;
+          budget_max: number | null;
+          preferred_body_types: string[] | null;
+          desired_features: string[] | null;
+          location: string | null;
+          is_verified: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          preferred_makes?: string[] | null;
+          budget_min?: number | null;
+          budget_max?: number | null;
+          preferred_body_types?: string[] | null;
+          desired_features?: string[] | null;
+          location?: string | null;
+          is_verified?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          preferred_makes?: string[] | null;
+          budget_min?: number | null;
+          budget_max?: number | null;
+          preferred_body_types?: string[] | null;
+          desired_features?: string[] | null;
+          location?: string | null;
+          is_verified?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      seller_profiles: {
+        Row: {
+          id: string;
+          user_id: string;
+          business_name: string | null;
+          is_dealer: boolean;
+          license_number: string | null;
+          license_expiry: string | null;
+          average_rating: number | null;
+          total_sales: number;
+          location: string | null;
+          is_verified: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          business_name?: string | null;
+          is_dealer?: boolean;
+          license_number?: string | null;
+          license_expiry?: string | null;
+          average_rating?: number | null;
+          total_sales?: number;
+          location?: string | null;
+          is_verified?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          business_name?: string | null;
+          is_dealer?: boolean;
+          license_number?: string | null;
+          license_expiry?: string | null;
+          average_rating?: number | null;
+          total_sales?: number;
+          location?: string | null;
+          is_verified?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      matches: {
+        Row: {
+          id: string;
+          vehicle_id: string;
+          buyer_id: string;
+          seller_id: string;
+          match_score: number;
+          match_reason: string | null;
+          status: 'active' | 'contacted' | 'viewing_scheduled' | 'rejected' | 'completed';
+          contacted_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          vehicle_id: string;
+          buyer_id: string;
+          seller_id: string;
+          match_score: number;
+          match_reason?: string | null;
+          status?: 'active' | 'contacted' | 'viewing_scheduled' | 'rejected' | 'completed';
+          contacted_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          vehicle_id?: string;
+          buyer_id?: string;
+          seller_id?: string;
+          match_score?: number;
+          match_reason?: string | null;
+          status?: 'active' | 'contacted' | 'viewing_scheduled' | 'rejected' | 'completed';
+          contacted_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      transactions: {
+        Row: {
+          id: string;
+          match_id: string | null;
+          buyer_id: string;
+          seller_id: string;
+          vehicle_id: string;
+          sale_price: number;
+          commission_rate: number;
+          commission_amount: number;
+          platform_fee: number;
+          status: 'initiated' | 'pending' | 'completed' | 'disputed' | 'refunded';
+          payment_method: string | null;
+          stripe_payment_intent_id: string | null;
+          completed_at: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          match_id?: string | null;
+          buyer_id: string;
+          seller_id: string;
+          vehicle_id: string;
+          sale_price: number;
+          commission_rate: number;
+          commission_amount: number;
+          platform_fee?: number;
+          status?: 'initiated' | 'pending' | 'completed' | 'disputed' | 'refunded';
+          payment_method?: string | null;
+          stripe_payment_intent_id?: string | null;
+          completed_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          match_id?: string | null;
+          buyer_id?: string;
+          seller_id?: string;
+          vehicle_id?: string;
+          sale_price?: number;
+          commission_rate?: number;
+          commission_amount?: number;
+          platform_fee?: number;
+          status?: 'initiated' | 'pending' | 'completed' | 'disputed' | 'refunded';
+          payment_method?: string | null;
+          stripe_payment_intent_id?: string | null;
+          completed_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+    };
+    Views: {};
+    Functions: {};
+    Enums: {};
+  };
+};
