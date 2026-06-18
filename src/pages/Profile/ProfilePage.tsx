@@ -1,46 +1,47 @@
 import React, { useState, useEffect } from 'react';
-import { useAuthSafe } from '@/hooks/useAuth';
-import { supabase } from '@/services/supabase';
-import { User, Mail, Shield, Save, Car, DollarSign, MapPin } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import { supabase } from '../../lib/supabase';
+import { User, Mail, Save, Car, Terminal } from 'lucide-react';
 
 const ProfilePage: React.FC = () => {
-  const auth = useAuthSafe();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [profile, setProfile] = useState<any>(null);
-  const [buyerPrefs, setBuyerPrefs] = useState<any>({
-    preferred_makes: [],
+  const [buyerPrefs, setBuyerPrefs] = useState({
+    preferred_makes: [] as string[],
     min_price: 0,
     max_price: 50000,
     min_year: 2015,
-    preferred_body_types: []
   });
 
   useEffect(() => {
-    if (!auth?.user?.id) return;
+    if (!user?.id) return;
 
     const fetchProfileData = async () => {
       try {
-        // Fetch base profile
-        const { data: profileData, error: profileError } = await supabase
-          .from('profiles')
+        const { data: profileData } = await supabase
+          .from('users')
           .select('*')
-          .eq('id', auth.user!.id)
-          .single();
-        
-        if (profileError) throw profileError;
+          .eq('id', user.id)
+          .maybeSingle();
+
         setProfile(profileData);
 
-        // Fetch buyer preferences if applicable
-        if (profileData.profile_type === 'buyer' || profileData.profile_type === 'both') {
-          const { data: prefsData, error: prefsError } = await supabase
-            .from('buyer_profiles')
+        if (profileData) {
+          const { data: prefsData } = await supabase
+            .from('buyers')
             .select('*')
-            .eq('user_id', auth.user!.id)
-            .single();
-          
+            .eq('user_id', user.id)
+            .maybeSingle();
+
           if (prefsData) {
-            setBuyerPrefs(prefsData);
+            setBuyerPrefs({
+              preferred_makes: prefsData.preferred_vehicles || [],
+              min_price: prefsData.budget_min || 0,
+              max_price: prefsData.budget_max || 50000,
+              min_year: 2015,
+            });
           }
         }
       } catch (error) {
@@ -51,30 +52,27 @@ const ProfilePage: React.FC = () => {
     };
 
     fetchProfileData();
-  }, [auth?.user?.id]);
+  }, [user?.id]);
 
   const handleSave = async () => {
-    if (!auth?.user?.id || saving) return;
+    if (!user?.id || saving) return;
     setSaving(true);
     try {
-      // Update base profile
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update({ full_name: profile.full_name })
-        .eq('id', auth.user.id);
-      
-      if (profileError) throw profileError;
-
-      // Update buyer preferences
-      if (profile.profile_type === 'buyer' || profile.profile_type === 'both') {
-        const { error: prefsError } = await supabase
-          .from('buyer_profiles')
-          .upsert({
-            user_id: auth.user.id,
-            ...buyerPrefs
-          });
-        if (prefsError) throw prefsError;
+      if (profile) {
+        await supabase
+          .from('users')
+          .update({ full_name: profile.full_name })
+          .eq('id', user.id);
       }
+
+      await supabase
+        .from('buyers')
+        .upsert({
+          user_id: user.id,
+          preferred_vehicles: buyerPrefs.preferred_makes,
+          budget_min: buyerPrefs.min_price,
+          budget_max: buyerPrefs.max_price,
+        }, { onConflict: 'user_id' });
 
       alert('Profile updated successfully!');
     } catch (error) {
@@ -87,138 +85,143 @@ const ProfilePage: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen bg-surface-950 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-10 w-10 border-2 border-emerald-400 border-t-transparent mx-auto mb-4"></div>
+          <p className="text-surface-500 font-mono text-sm">loading_profile...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-12">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Account Settings</h1>
-        <p className="text-gray-600">Manage your profile information and vehicle preferences.</p>
-      </div>
+    <div className="min-h-screen bg-surface-950">
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="flex items-center gap-3 mb-4">
+          <Terminal className="w-4 h-4 text-emerald-400" />
+          <span className="text-emerald-400 font-mono text-sm">// profile</span>
+        </div>
+        <h1 className="text-3xl font-display font-bold text-white mb-2">Account Settings</h1>
+        <p className="text-surface-400 mb-8">Manage your profile information and vehicle preferences.</p>
 
-      <div className="space-y-8">
-        {/* Basic Information */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-            <h2 className="text-lg font-bold text-gray-900 flex items-center">
-              <User className="mr-2 h-5 w-5 text-blue-600" />
-              Basic Information
-            </h2>
-          </div>
-          <div className="p-6 space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                <input
-                  type="text"
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                  value={profile?.full_name || ''}
-                  onChange={(e) => setProfile({ ...profile, full_name: e.target.value })}
-                />
+        <div className="space-y-4">
+          <div className="bg-surface-900/50 border border-surface-800 rounded-2xl overflow-hidden">
+            <div className="px-6 py-4 border-b border-surface-800">
+              <h2 className="text-lg font-semibold text-white flex items-center">
+                <User className="mr-2 h-5 w-5 text-emerald-400" />
+                Basic Information
+              </h2>
+            </div>
+            <div className="p-6 space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="label-field">Full Name</label>
+                  <input
+                    type="text"
+                    className="input-field"
+                    value={profile?.full_name || ''}
+                    onChange={(e) => setProfile({ ...profile, full_name: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="label-field">Email Address</label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-surface-500" />
+                    <input
+                      type="email"
+                      disabled
+                      className="input-field pl-10 bg-surface-800 text-surface-500 cursor-not-allowed"
+                      value={user?.email || ''}
+                    />
+                  </div>
+                </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                  <input
-                    type="email"
-                    disabled
-                    className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-500 cursor-not-allowed"
-                    value={profile?.email || ''}
-                  />
+                <label className="label-field">Account Type</label>
+                <div className="flex items-center space-x-2">
+                  <span className="px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-lg text-xs font-bold uppercase tracking-wider">
+                    {profile?.profile_type || 'buyer'}
+                  </span>
+                  <span className="px-3 py-1 bg-brand-500/10 border border-brand-500/20 text-brand-400 rounded-lg text-xs font-bold uppercase tracking-wider">
+                    {profile?.subscription_tier || 'free'} member
+                  </span>
                 </div>
               </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Account Type</label>
-              <div className="flex items-center space-x-2">
-                <span className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold uppercase tracking-wider">
-                  {profile?.profile_type}
-                </span>
-                <span className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-bold uppercase tracking-wider">
-                  {profile?.subscription_tier} Member
-                </span>
-              </div>
-            </div>
           </div>
-        </div>
 
-        {/* Buyer Preferences (Conditional) */}
-        {(profile?.profile_type === 'buyer' || profile?.profile_type === 'both') && (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-              <h2 className="text-lg font-bold text-gray-900 flex items-center">
-                <Car className="mr-2 h-5 w-5 text-blue-600" />
+          <div className="bg-surface-900/50 border border-surface-800 rounded-2xl overflow-hidden">
+            <div className="px-6 py-4 border-b border-surface-800">
+              <h2 className="text-lg font-semibold text-white flex items-center">
+                <Car className="mr-2 h-5 w-5 text-emerald-400" />
                 Matching Preferences
               </h2>
             </div>
             <div className="p-6 space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Price Range (USD)</label>
+                  <label className="label-field">Price Range (USD)</label>
                   <div className="flex items-center space-x-2">
                     <input
                       type="number"
                       placeholder="Min"
-                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                      className="input-field"
                       value={buyerPrefs.min_price}
-                      onChange={(e) => setBuyerPrefs({ ...buyerPrefs, min_price: parseInt(e.target.value) })}
+                      onChange={(e) => setBuyerPrefs({ ...buyerPrefs, min_price: parseInt(e.target.value) || 0 })}
                     />
-                    <span>-</span>
+                    <span className="text-surface-500">-</span>
                     <input
                       type="number"
                       placeholder="Max"
-                      className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                      className="input-field"
                       value={buyerPrefs.max_price}
-                      onChange={(e) => setBuyerPrefs({ ...buyerPrefs, max_price: parseInt(e.target.value) })}
+                      onChange={(e) => setBuyerPrefs({ ...buyerPrefs, max_price: parseInt(e.target.value) || 50000 })}
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Minimum Year</label>
+                  <label className="label-field">Minimum Year</label>
                   <input
                     type="number"
-                    className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    className="input-field"
                     value={buyerPrefs.min_year}
-                    onChange={(e) => setBuyerPrefs({ ...buyerPrefs, min_year: parseInt(e.target.value) })}
+                    onChange={(e) => setBuyerPrefs({ ...buyerPrefs, min_year: parseInt(e.target.value) || 2015 })}
                   />
                 </div>
               </div>
-              
+
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Preferred Brands (Comma separated)</label>
+                <label className="label-field">Preferred Brands (Comma separated)</label>
                 <input
                   type="text"
                   placeholder="Toyota, Honda, BMW..."
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
-                  value={Array.isArray(buyerPrefs.preferred_makes) ? buyerPrefs.preferred_makes.join(', ') : ''}
-                  onChange={(e) => setBuyerPrefs({ ...buyerPrefs, preferred_makes: e.target.value.split(',').map((s: string) => s.trim()) })}
+                  className="input-field"
+                  value={buyerPrefs.preferred_makes.join(', ')}
+                  onChange={(e) => setBuyerPrefs({ ...buyerPrefs, preferred_makes: e.target.value.split(',').map(s => s.trim()).filter(Boolean) })}
                 />
               </div>
             </div>
           </div>
-        )}
 
-        {/* Save Button */}
-        <div className="flex justify-end">
-          <button
-            onClick={handleSave}
-            disabled={saving}
-            className={`flex items-center px-6 py-3 rounded-xl font-bold text-white transition-all ${
-              saving ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-blue-200'
-            }`}
-          >
-            {saving ? (
-              <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-            ) : (
-              <Save className="mr-2 h-5 w-5" />
-            )}
-            Save Changes
-          </button>
+          <div className="flex justify-end">
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className={`btn-primary ${saving ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              {saving ? (
+                <span className="flex items-center gap-2">
+                  <span className="animate-spin h-4 w-4 border-2 border-surface-900/30 border-t-surface-900 rounded-full" />
+                  Saving...
+                </span>
+              ) : (
+                <>
+                  <Save className="w-4 h-4" />
+                  Save Changes
+                </>
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </div>

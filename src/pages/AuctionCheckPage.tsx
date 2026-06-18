@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
-import { Shield, Upload, CheckCircle, Info, FileText, Terminal, AlertTriangle, FileUp } from 'lucide-react';
-import { useAuthSafe } from '@/hooks/useAuth';
-import { submitAuctionVerification } from '@/services/auctionService';
+import { Shield, Upload, CheckCircle, Info, FileText, Terminal, FileUp } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import { submitAuctionVerification } from '../services/auctionService';
 
 const exteriorGrades = [
   { grade: '5', label: 'Excellent', color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20', description: 'Like new condition. Minimal to no wear.' },
@@ -40,7 +40,7 @@ function severityStyle(s: string) {
 }
 
 export default function AuctionCheckPage() {
-  const auth = useAuthSafe();
+  const { user } = useAuth();
   const [auctionId, setAuctionId] = useState('');
   const [notes, setNotes] = useState('');
   const [file, setFile] = useState<File | null>(null);
@@ -50,11 +50,11 @@ export default function AuctionCheckPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!auctionId.trim() || !auth?.user?.id) return;
+    if (!auctionId.trim() || !user?.id) return;
 
     setSubmitting(true);
     try {
-      await submitAuctionVerification(auth.user.id, {
+      await submitAuctionVerification(user.id, {
         lotNumber: auctionId,
         notes: notes,
         sheetFile: file || undefined

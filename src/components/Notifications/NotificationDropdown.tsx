@@ -1,18 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useAuthSafe } from '@/hooks/useAuth';
-import { 
-  getUserNotifications, 
-  markNotificationAsRead, 
-  markAllNotificationsAsRead,
-  subscribeToNotifications,
-  Notification
-} from '@/services/notificationService';
-import { Bell, Check, Trash2, ExternalLink, X } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
+import { useAuth } from '../../contexts/AuthContext';
+import { getUserNotifications, markNotificationAsRead, markAllNotificationsAsRead, subscribeToNotifications } from '../../services/notificationService';
+import { Bell, Check } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const NotificationDropdown: React.FC = () => {
-  const auth = useAuthSafe();
+  const { user } = useAuth();
   const [notifications, setNotifications] = useState<any[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -20,12 +13,12 @@ const NotificationDropdown: React.FC = () => {
   const unreadCount = notifications.filter(n => !n.read).length;
 
   useEffect(() => {
-    if (!auth?.user?.id) return;
+    if (!user?.id) return;
 
     const fetchNotifications = async () => {
       try {
-        const data = await getUserNotifications(auth.user.id);
-        setNotifications(data);
+        const data = await getUserNotifications(user.id);
+        setNotifications(data || []);
       } catch (error) {
         console.error('Error fetching notifications:', error);
       }
@@ -33,14 +26,14 @@ const NotificationDropdown: React.FC = () => {
 
     fetchNotifications();
 
-    const subscription = subscribeToNotifications(auth.user.id, (newNotif) => {
+    const subscription = subscribeToNotifications(user.id, (newNotif) => {
       setNotifications(prev => [newNotif, ...prev]);
     });
 
     return () => {
       subscription.unsubscribe();
     };
-  }, [auth?.user?.id]);
+  }, [user?.id]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -62,9 +55,9 @@ const NotificationDropdown: React.FC = () => {
   };
 
   const handleMarkAllAsRead = async () => {
-    if (!auth?.user?.id) return;
+    if (!user?.id) return;
     try {
-      await markAllNotificationsAsRead(auth.user.id);
+      await markAllNotificationsAsRead(user.id);
       setNotifications(prev => prev.map(n => ({ ...n, read: true })));
     } catch (error) {
       console.error('Error marking all as read:', error);
@@ -100,7 +93,7 @@ const NotificationDropdown: React.FC = () => {
           <div className="px-4 py-3 border-b border-surface-800 flex justify-between items-center bg-surface-800/50">
             <h3 className="text-sm font-bold text-white">Notifications</h3>
             {unreadCount > 0 && (
-              <button 
+              <button
                 onClick={handleMarkAllAsRead}
                 className="text-[10px] font-bold text-emerald-400 hover:text-emerald-300 uppercase tracking-wider"
               >
@@ -112,19 +105,19 @@ const NotificationDropdown: React.FC = () => {
           <div className="max-h-96 overflow-y-auto divide-y divide-surface-800">
             {notifications.length > 0 ? (
               notifications.map((notif) => (
-                <div 
-                  key={notif.id} 
+                <div
+                  key={notif.id}
                   className={`p-4 hover:bg-surface-800/30 transition-colors ${!notif.read ? 'bg-surface-800/10' : ''}`}
                 >
                   <div className="flex items-start">
                     <span className="text-xl mr-3 mt-0.5">{getIcon(notif.type)}</span>
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-start mb-1">
-                        <p className={`text-sm font-bold truncate ${!notif.read ? 'text-white' : 'text-surface-300'}`}>
+                        <p className={`text-sm font-semibold truncate ${!notif.read ? 'text-white' : 'text-surface-300'}`}>
                           {notif.title}
                         </p>
                         {!notif.read && (
-                          <button 
+                          <button
                             onClick={() => handleMarkAsRead(notif.id)}
                             className="p-1 hover:bg-surface-700 rounded text-surface-500 hover:text-emerald-400"
                           >
@@ -135,8 +128,8 @@ const NotificationDropdown: React.FC = () => {
                       <p className="text-xs text-surface-400 line-clamp-2 mb-2">
                         {notif.message}
                       </p>
-                      <p className="text-[10px] text-surface-500 font-medium">
-                        {formatDistanceToNow(new Date(notif.created_at), { addSuffix: true })}
+                      <p className="text-[10px] text-surface-500 font-mono">
+                        {new Date(notif.created_at).toLocaleDateString()}
                       </p>
                     </div>
                   </div>
@@ -145,13 +138,13 @@ const NotificationDropdown: React.FC = () => {
             ) : (
               <div className="p-8 text-center">
                 <Bell className="h-8 w-8 text-surface-700 mx-auto mb-3" />
-                <p className="text-sm text-surface-500">No notifications yet.</p>
+                <p className="text-sm text-surface-500 font-mono">no_notifications</p>
               </div>
             )}
           </div>
 
-          <Link 
-            to="/dashboard" 
+          <Link
+            to="/dashboard"
             onClick={() => setIsOpen(false)}
             className="block py-3 text-center text-xs font-bold text-surface-400 hover:text-white border-t border-surface-800 hover:bg-surface-800/50 transition-all"
           >

@@ -1,30 +1,45 @@
 import React, { useState, useEffect } from 'react';
-import { useAuthSafe } from '@/hooks/useAuth';
-import { getMatchesForUser } from '@/services/matchingService';
-import { supabase } from '@/services/supabase';
+import { useAuth } from '../../contexts/AuthContext';
+import { getMatchesForUser } from '../../services/matchingService';
+import { supabase } from '../../lib/supabase';
 import { Link } from 'react-router-dom';
-import { Car, Star, MapPin, Calendar, ArrowRight, Filter, TrendingUp } from 'lucide-react';
+import { Car, Star, MapPin, Calendar, ArrowRight, Filter, TrendingUp, Terminal } from 'lucide-react';
+
+interface Match {
+  id: string;
+  vehicle_id: string;
+  seller_id: string;
+  match_score: number;
+  match_reason: string;
+  vehicle?: {
+    make: string;
+    model: string;
+    year: number;
+    estimated_price_usd?: number;
+    mileage_km?: number;
+    auction_grade?: string;
+    image_url?: string;
+  };
+}
 
 const MarketplacePage: React.FC = () => {
-  const auth = useAuthSafe();
-  const [matches, setMatches] = useState<any[]>([]);
+  const { user } = useAuth();
+  const [matches, setMatches] = useState<Match[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!auth?.user?.id || !auth?.userProfile) return;
+    if (!user?.id) return;
 
     const fetchMatches = async () => {
       try {
-        const type = auth.userProfile.profile_type === 'seller' ? 'seller' : 'buyer';
-        const matchData = await getMatchesForUser(auth.user.id, type);
-        
-        // Enrich match data with vehicle details
-        const enrichedMatches = await Promise.all(matchData.map(async (match: any) => {
+        const matchData = await getMatchesForUser(user.id, 'buyer') || [];
+
+        const enrichedMatches = await Promise.all(matchData.map(async (match: Match) => {
           const { data: vehicle } = await supabase
             .from('vehicles')
             .select('*')
             .eq('id', match.vehicle_id)
-            .single();
+            .maybeSingle();
           return { ...match, vehicle };
         }));
 
@@ -37,122 +52,138 @@ const MarketplacePage: React.FC = () => {
     };
 
     fetchMatches();
-  }, [auth?.user?.id, auth?.userProfile]);
+  }, [user?.id]);
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen bg-surface-950 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-10 w-10 border-2 border-emerald-400 border-t-transparent mx-auto mb-4"></div>
+          <p className="text-surface-500 font-mono text-sm">loading_matches...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12">
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-10">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Vehicle Match Marketplace</h1>
-          <p className="text-gray-600 mt-2">Personalized recommendations based on your preferences.</p>
+    <div className="min-h-screen bg-surface-950">
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="flex items-center gap-3 mb-4">
+          <Terminal className="w-4 h-4 text-emerald-400" />
+          <span className="text-emerald-400 font-mono text-sm">// marketplace</span>
         </div>
-        <div className="mt-4 md:mt-0 flex space-x-3">
-          <button className="flex items-center px-4 py-2 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-            <Filter className="h-4 w-4 mr-2" />
-            Filter
-          </button>
-          <Link 
-            to="/profile" 
-            className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
-          >
-            Update Preferences
-          </Link>
-        </div>
-      </div>
 
-      {matches.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {matches.map((match) => (
-            <div key={match.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-xl transition-all group">
-              {/* Vehicle Image */}
-              <div className="relative h-48 bg-gray-200 overflow-hidden">
-                <img 
-                  src={match.vehicle?.images?.[0] || 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80'} 
-                  alt={match.vehicle?.make}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full flex items-center shadow-sm">
-                  <TrendingUp className="h-3 w-3 text-emerald-500 mr-1" />
-                  <span className="text-xs font-bold text-gray-900">{match.match_score}% Match</span>
+        <div className="flex flex-col md:flex-row md:items-center justify-between mb-10">
+          <div>
+            <h1 className="text-3xl font-display font-bold text-white">Vehicle Match Marketplace</h1>
+            <p className="text-surface-400 mt-2">Personalized recommendations based on your preferences.</p>
+          </div>
+          <div className="mt-4 md:mt-0 flex space-x-3">
+            <button className="flex items-center px-4 py-2 border border-surface-700 rounded-lg text-surface-300 hover:bg-surface-800 transition-colors text-sm">
+              <Filter className="h-4 w-4 mr-2" />
+              Filter
+            </button>
+            <Link
+              to="/profile"
+              className="flex items-center px-4 py-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-lg hover:bg-emerald-500/20 transition-colors text-sm"
+            >
+              Update Preferences
+            </Link>
+          </div>
+        </div>
+
+        {matches.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {matches.map((match) => (
+              <div key={match.id} className="bg-surface-900/50 border border-surface-800 rounded-2xl overflow-hidden hover:border-surface-700 transition-all group">
+                <div className="relative h-48 bg-surface-800 overflow-hidden">
+                  {match.vehicle?.image_url ? (
+                    <img
+                      src={match.vehicle.image_url}
+                      alt={match.vehicle.make}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Car className="w-12 h-12 text-surface-700" />
+                    </div>
+                  )}
+                  <div className="absolute top-4 right-4 bg-surface-900/90 backdrop-blur px-3 py-1 rounded-full flex items-center border border-surface-700">
+                    <TrendingUp className="h-3 w-3 text-emerald-400 mr-1" />
+                    <span className="text-xs font-bold text-white">{match.match_score}% Match</span>
+                  </div>
                 </div>
-              </div>
 
-              {/* Details */}
-              <div className="p-6">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="text-lg font-bold text-gray-900">{match.vehicle?.year} {match.vehicle?.make} {match.vehicle?.model}</h3>
-                    <div className="flex items-center text-gray-500 text-sm mt-1">
-                      <MapPin className="h-3 w-3 mr-1" />
-                      {match.vehicle?.location || 'International'}
+                <div className="p-5">
+                  <div className="flex justify-between items-start mb-4">
+                    <div>
+                      <h3 className="text-lg font-bold text-white">{match.vehicle?.year} {match.vehicle?.make} {match.vehicle?.model}</h3>
+                      <div className="flex items-center text-surface-500 text-sm mt-1">
+                        <MapPin className="h-3 w-3 mr-1" />
+                        International
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xl font-bold text-emerald-400">${match.vehicle?.estimated_price_usd?.toLocaleString() || 'N/A'}</p>
+                      <p className="text-[10px] text-surface-500 font-mono uppercase tracking-wider">estimated</p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="text-xl font-bold text-blue-600">${match.vehicle?.price?.toLocaleString()}</p>
-                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Estimated Cost</p>
-                  </div>
-                </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-6">
-                  <div className="flex items-center text-sm text-gray-600">
-                    <Star className="h-4 w-4 text-yellow-400 mr-2" />
-                    Grade: {match.vehicle?.grade || '4.5'}
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div className="flex items-center text-sm text-surface-400">
+                      <Star className="h-4 w-4 text-amber-400 mr-2" />
+                      Grade: {match.vehicle?.auction_grade || 'N/A'}
+                    </div>
+                    <div className="flex items-center text-sm text-surface-400">
+                      <Calendar className="h-4 w-4 text-brand-400 mr-2" />
+                      {match.vehicle?.mileage_km?.toLocaleString() || 'N/A'} km
+                    </div>
                   </div>
-                  <div className="flex items-center text-sm text-gray-600">
-                    <Calendar className="h-4 w-4 text-blue-400 mr-2" />
-                    Mileage: {match.vehicle?.mileage?.toLocaleString() || '45,000'} km
+
+                  {match.match_reason && (
+                    <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3 mb-4">
+                      <p className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1">why_it_matches</p>
+                      <p className="text-xs text-surface-300 leading-relaxed">{match.match_reason}</p>
+                    </div>
+                  )}
+
+                  <div className="flex space-x-3">
+                    <Link
+                      to={`/vehicles`}
+                      className="flex-1 text-center py-2 border border-surface-700 rounded-xl text-sm font-medium text-surface-300 hover:bg-surface-800 transition-colors"
+                    >
+                      View Details
+                    </Link>
+                    <Link
+                      to={`/messages/${match.seller_id}`}
+                      className="flex-1 text-center py-2 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-sm font-medium text-emerald-400 hover:bg-emerald-500/20 transition-colors"
+                    >
+                      Contact Seller
+                    </Link>
                   </div>
-                </div>
-
-                <div className="bg-blue-50 rounded-xl p-3 mb-6">
-                  <p className="text-xs font-bold text-blue-700 uppercase tracking-wider mb-1">Why it matches:</p>
-                  <p className="text-xs text-blue-600 leading-relaxed">{match.match_reason}</p>
-                </div>
-
-                <div className="flex space-x-3">
-                  <Link 
-                    to={`/vehicles/${match.vehicle_id}`}
-                    className="flex-1 text-center py-2.5 border border-gray-200 rounded-xl text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors"
-                  >
-                    View Details
-                  </Link>
-                  <Link 
-                    to={`/messages/${match.seller_id}`}
-                    className="flex-1 text-center py-2.5 bg-blue-600 rounded-xl text-sm font-bold text-white hover:bg-blue-700 transition-colors shadow-sm"
-                  >
-                    Contact Seller
-                  </Link>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-200">
-          <div className="h-20 w-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Car className="h-10 w-10 text-gray-300" />
+            ))}
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">No Matches Found Yet</h2>
-          <p className="text-gray-500 max-w-md mx-auto mb-8">
-            We haven't found any vehicles that match your current preferences. Try broadening your search criteria.
-          </p>
-          <Link 
-            to="/profile" 
-            className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg shadow-blue-100"
-          >
-            Update My Preferences
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Link>
-        </div>
-      )}
+        ) : (
+          <div className="text-center py-20 bg-surface-900/50 border border-surface-800 rounded-3xl">
+            <div className="h-20 w-20 bg-surface-800 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Car className="h-10 w-10 text-surface-600" />
+            </div>
+            <h2 className="text-2xl font-display font-bold text-white mb-2">No Matches Found Yet</h2>
+            <p className="text-surface-400 max-w-md mx-auto mb-8">
+              We haven't found any vehicles that match your current preferences. Try broadening your search criteria.
+            </p>
+            <Link
+              to="/profile"
+              className="inline-flex items-center px-6 py-3 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 rounded-xl font-medium hover:bg-emerald-500/20 transition-all"
+            >
+              Update My Preferences
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

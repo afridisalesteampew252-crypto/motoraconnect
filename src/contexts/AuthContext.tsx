@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, ReactNode, useRef } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 
@@ -16,21 +16,47 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  const loadingRef = useRef(true);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    let mounted = true;
+    const timeoutId = setTimeout(() => {
+      if (mounted && loadingRef.current) {
+        console.warn('Auth session fetch timeout - forcing loading false');
+        setLoading(false);
+        loadingRef.current = false;
+      }
+    }, 8000);
+
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (!mounted) return;
+      clearTimeout(timeoutId);
+      if (error) console.error('Session fetch error:', error);
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+      loadingRef.current = false;
+    }).catch((err) => {
+      if (!mounted) return;
+      clearTimeout(timeoutId);
+      console.error('Session fetch exception:', err);
+      setLoading(false);
+      loadingRef.current = false;
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!mounted) return;
       setSession(session);
       setUser(session?.user ?? null);
       setLoading(false);
+      loadingRef.current = false;
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      clearTimeout(timeoutId);
+      subscription.unsubscribe();
+    };
   }, []);
 
   async function signIn(email: string, password: string) {

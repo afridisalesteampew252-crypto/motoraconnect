@@ -1,10 +1,4 @@
-import { supabase } from './supabase';
-import type { Database } from '@/types/database';
-
-type Vehicle = Database['public']['Tables']['vehicles']['Row'];
-type BuyerProfile = Database['public']['Tables']['buyer_profiles']['Row'];
-type SellerProfile = Database['public']['Tables']['seller_profiles']['Row'];
-type Match = Database['public']['Tables']['matches']['Row'];
+import { supabase } from '../lib/supabase';
 
 /**
  * Matching score breakdown

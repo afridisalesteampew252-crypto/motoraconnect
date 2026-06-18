@@ -1,7 +1,4 @@
-import { supabase } from './supabase';
-import type { Database } from '@/types/database';
-
-type Vehicle = Database['public']['Tables']['vehicles']['Row'];
+import { supabase } from '../lib/supabase';
 
 export interface SearchFilters {
   make?: string;
