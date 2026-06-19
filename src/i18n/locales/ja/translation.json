@@ -1,0 +1,21 @@
+{
+  "common": {
+    "welcome": "Motora Connectへようこそ",
+    "search": "検索",
+    "login": "ログイン",
+    "signup": "サインアップ",
+    "logout": "ログアウト",
+    "dashboard": "ダッシュボード",
+    "marketplace": "マーケットプレイス",
+    "vehicles": "車両",
+    "calculator": "計算機",
+    "blog": "ブログ",
+    "contact": "お問い合わせ",
+    "save": "保存",
+    "cancel": "キャンセル"
+  },
+  "home": {
+    "hero_title": "世界と日本の品質をつなぐ",
+    "hero_subtitle": "車両の輸出入コンサルティングのプレミアパートナー。日本のオークションと世界のバイヤーの架け橋となります。"
+  }
+}

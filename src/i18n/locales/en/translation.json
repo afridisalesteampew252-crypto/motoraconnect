@@ -1,0 +1,21 @@
+{
+  "common": {
+    "welcome": "Welcome to Motora Connect",
+    "search": "Search",
+    "login": "Login",
+    "signup": "Sign Up",
+    "logout": "Logout",
+    "dashboard": "Dashboard",
+    "marketplace": "Marketplace",
+    "vehicles": "Vehicles",
+    "calculator": "Calculator",
+    "blog": "Blog",
+    "contact": "Contact",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "home": {
+    "hero_title": "Connecting the World to Japanese Quality",
+    "hero_subtitle": "Your premier partner for vehicle export and import consulting. We bridge the gap between Japanese auctions and global buyers."
+  }
+}

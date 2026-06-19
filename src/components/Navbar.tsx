@@ -3,12 +3,14 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, LogIn, LogOut, User } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import NotificationDropdown from './Notifications/NotificationDropdown';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const navLinks = [
   { name: 'Home', path: '/' },
   { name: 'Vehicles', path: '/vehicles' },
   { name: 'Calculator', path: '/calculator' },
   { name: 'Auction Check', path: '/auction-check' },
+  { name: 'Laws', path: '/laws' },
   { name: 'Blog', path: '/blog' },
   { name: 'Contact', path: '/contact' },
 ];
@@ -71,6 +73,7 @@ export default function Navbar() {
             </div>
 
             <div className="hidden md:flex items-center gap-3">
+              <LanguageSwitcher />
               {user ? (
                 <div className="flex items-center gap-3">
                   <NotificationDropdown />
