@@ -19,6 +19,7 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import AdminLayout from './admin/AdminLayout';
 import AdminGuard from './admin/AdminGuard';
 import { LoginPage } from './admin/pages/LoginPage';
+import SignupPage from './pages/SignupPage';
 import AdminDashboardPage from './admin/pages/DashboardPage';
 import VehiclesAdminPage from './admin/pages/VehiclesAdminPage';
 import BlogAdminPage from './admin/pages/BlogAdminPage';
@@ -108,6 +109,7 @@ export default function App() {
 
             {/* Admin routes */}
             <Route path="/admin/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
             <Route
               path="/admin"
               element={

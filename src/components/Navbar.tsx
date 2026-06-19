@@ -92,13 +92,21 @@ export default function Navbar() {
                   </button>
                 </div>
               ) : (
-                <Link
-                  to="/admin/login"
-                  className="inline-flex items-center gap-2 text-sm text-surface-400 hover:text-white border border-surface-700 px-3 py-1.5 rounded-lg hover:border-surface-600 transition-all duration-200"
-                >
-                  <LogIn className="w-3.5 h-3.5" />
-                  Login
-                </Link>
+                <div className="flex items-center gap-2">
+                  <Link
+                    to="/admin/login"
+                    className="inline-flex items-center gap-2 text-sm text-surface-400 hover:text-white border border-surface-700 px-3 py-1.5 rounded-lg hover:border-surface-600 transition-all duration-200"
+                  >
+                    <LogIn className="w-3.5 h-3.5" />
+                    Login
+                  </Link>
+                  <Link
+                    to="/signup"
+                    className="inline-flex items-center gap-2 text-sm bg-brand-500 text-white px-3 py-1.5 rounded-lg hover:bg-brand-400 transition-all duration-200"
+                  >
+                    Sign Up
+                  </Link>
+                </div>
               )}
               <Link
                 to="/consultation"

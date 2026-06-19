@@ -2,7 +2,7 @@
 
 ## PHASE 1: MVP Progress
 - [x] Session 1: Database & Backend Setup ✅ COMPLETED
-- [x] Session 2: Authentication & User Roles ✅ COMPLETED
+- [x] Session 2: Authentication & User Roles ✅ COMPLETED (Signup UI + AuthContext updated)
 - [~] Session 3: Stripe Integration & Payment ⚠️ PARTIAL (no Stripe SDK, placeholder UI)
 - [x] Session 4: Vehicle Database & Search ✅ COMPLETED
 - [x] Session 5: Admin Dashboard ✅ COMPLETED (6 admin pages, all functional)
@@ -28,7 +28,7 @@
 ## Progress Stats
 - **Phase 1**: 5/6 complete, 1 partial → ~83%
 - **Phase 2**: 5/6 complete, 1 partial → ~83%
-- **Overall**: ~75% complete
+- **Overall**: ~80% complete
 
 ## What's Fully Working (End-to-End)
 
