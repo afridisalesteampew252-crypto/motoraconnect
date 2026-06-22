@@ -173,25 +173,25 @@ const DashboardPage: React.FC = () => {
           {
             name: 'Active Matches',
             value: '0',
-            icon: TrendingUp,
+            icon: <TrendingUp className="w-5 h-5" />,
             color: 'bg-brand-500/10 text-brand-400 border-brand-500/20'
           },
           {
             name: 'Messages',
             value: '0',
-            icon: MessageSquare,
+            icon: <MessageSquare className="w-5 h-5" />,
             color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
           },
           {
             name: 'Notifications',
             value: '0',
-            icon: Bell,
+            icon: <Bell className="w-5 h-5" />,
             color: 'bg-amber-500/10 text-amber-400 border-amber-500/20'
           },
           {
             name: 'Subscription',
-            value: 'FREE',
-            icon: CreditCard,
+            value: 'free',
+            icon: <CreditCard className="w-5 h-5" />,
             color: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20'
           }
         ]);
