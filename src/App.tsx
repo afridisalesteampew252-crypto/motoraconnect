@@ -16,6 +16,7 @@ import ChatPage from './pages/Messaging/ChatPage';
 import MarketplacePage from './pages/Marketplace/MarketplacePage';
 import ProfilePage from './pages/Profile/ProfilePage';
 import AnalyticsPage from './pages/Analytics/AnalyticsPage';
+import LoginPage from './pages/Auth/Login';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import AdminLayout from './admin/AdminLayout';
 import AdminGuard from './admin/AdminGuard';
