@@ -244,7 +244,7 @@ const DashboardPage: React.FC = () => {
               <div className="flex items-center justify-between mb-3">
                 <p className="text-xs text-surface-500 font-mono">{stat.name.toLowerCase()}</p>
                 <div className={`w-8 h-8 rounded-lg border flex items-center justify-center ${stat.color}`}>
-                  <stat.icon className="h-4 w-4" />
+                  {stat.icon}
                 </div>
               </div>
               <p className="text-2xl font-display font-bold text-white">{stat.value}</p>
