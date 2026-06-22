@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '../../contexts/AuthContext';
 
-export const Login: React.FC = () => {
+const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { signIn, error, loading } = useAuth();
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -102,3 +102,5 @@ export const Login: React.FC = () => {
     </div>
   );
 };
+
+export default LoginPage;
