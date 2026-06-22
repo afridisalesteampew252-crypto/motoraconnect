@@ -98,13 +98,21 @@ export default function App() {
                 </ProtectedRoute>
               } 
             />
-            <Route 
-              path="/profile" 
+            <Route
+              path="/analytics"
+              element={
+                <ProtectedRoute>
+                  <AnalyticsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
               element={
                 <ProtectedRoute>
                   <ProfilePage />
                 </ProtectedRoute>
-              } 
+              }
             />
 
             {/* Admin routes */}
