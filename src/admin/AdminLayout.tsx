@@ -32,7 +32,7 @@ export default function AdminLayout() {
 
   async function handleSignOut() {
     await signOut();
-    navigate('/admin/login');
+   navigate('/admin/login', { replace: true });
   }
 
   return (
