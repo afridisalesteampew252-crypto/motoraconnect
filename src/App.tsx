@@ -118,6 +118,7 @@ export default function App() {
 
             {/* Admin routes */}
             <Route path="/admin/login" element={<LoginPage />} />
+            <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
             <Route
               path="/admin"
