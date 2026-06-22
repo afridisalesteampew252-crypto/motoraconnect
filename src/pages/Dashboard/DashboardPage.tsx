@@ -158,7 +158,7 @@ const DashboardPage: React.FC = () => {
           },
           {
             name: 'Subscription',
-            value: (profileData?.subscription_tier || 'free').toUpperCase(),
+            value: profileData?.subscription_tier || 'free',
             icon: <CreditCard className="w-5 h-5" />,
             color: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20'
           }
