@@ -14,7 +14,6 @@ const DashboardPage: React.FC = () => {
   }>>([]);
   const [recentMatches, setRecentMatches] = useState<Array<any>>([]);
   const [recentMessages, setRecentMessages] = useState<Array<any>>([]);
-  const [recentNotifications, setRecentNotifications] = useState<Array<any>>([]);
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState<'buyer' | 'seller' | 'both' | null>(null);
 
@@ -31,7 +30,7 @@ const DashboardPage: React.FC = () => {
           .maybeSingle();
 
         // Determine user role
-        let role: 'buyer' | 'seller' | 'both' | null = null;
+        let role: 'buyer' | 'seller' | 'both' | null = 'buyer'; // Default to buyer
         if (profileData) {
           const profileType = profileData.profile_type || 'buyer';
           if (profileType === 'both') {
@@ -136,14 +135,6 @@ const DashboardPage: React.FC = () => {
           .select('id', { count: 'exact', head: true })
           .eq('user_id', user.id)
           .eq('read', false);
-
-        // Fetch recent notifications
-        const { data: notificationsData } = await supabase
-          .from('notifications')
-          .select('*')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false })
-          .limit(5);
 
         // Set stats
         setStats([
