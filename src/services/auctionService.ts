@@ -6,6 +6,9 @@ export interface AuctionVerificationRequest {
   sheetFile?: File;
 }
 
+/**
+ * Submit an auction sheet for verification
+ */
 export async function submitAuctionVerification(
   userId: string,
   request: AuctionVerificationRequest
@@ -13,24 +16,26 @@ export async function submitAuctionVerification(
   try {
     let sheetUrl = '';
 
+    // 1. Upload file if provided
     if (request.sheetFile) {
       const fileExt = request.sheetFile.name.split('.').pop();
       const fileName = `${userId}/${Date.now()}.${fileExt}`;
-      // FIX: removed "auction-sheets/" prefix
+      const filePath = `auction-sheets/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
         .from('auction-sheets')
-        .upload(fileName, request.sheetFile);
+        .upload(filePath, request.sheetFile);
 
       if (uploadError) throw uploadError;
 
       const { data: urlData } = supabase.storage
         .from('auction-sheets')
-        .getPublicUrl(fileName);
-
+        .getPublicUrl(filePath);
+      
       sheetUrl = urlData.publicUrl;
     }
 
+    // 2. Create verification record
     const { data, error } = await supabase
       .from('auction_verifications')
       .insert([
@@ -53,6 +58,9 @@ export async function submitAuctionVerification(
   }
 }
 
+/**
+ * Get user's auction verification requests
+ */
 export async function getUserAuctionRequests(userId: string) {
   try {
     const { data, error } = await supabase

@@ -94,7 +94,7 @@ export default function Navbar() {
               ) : (
                 <div className="flex items-center gap-2">
                   <Link
-                    to="/login"
+                    to="/admin/login"
                     className="inline-flex items-center gap-2 text-sm text-surface-400 hover:text-white border border-surface-700 px-3 py-1.5 rounded-lg hover:border-surface-600 transition-all duration-200"
                   >
                     <LogIn className="w-3.5 h-3.5" />
@@ -188,7 +188,7 @@ export default function Navbar() {
                 </div>
               ) : (
                 <Link
-                  to="/login"
+                  to="/admin/login"
                   onClick={() => setIsOpen(false)}
                   className="flex items-center justify-center gap-2 mt-3 pt-3 border-t border-surface-800 text-sm text-surface-400 hover:text-white transition-colors"
                 >
