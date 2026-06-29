@@ -42,6 +42,7 @@ export default function ConsultationPage() {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', country: '', vehicle_interest: '', budget_range: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   useEffect(() => {
     const plan = searchParams.get('plan');
@@ -50,16 +51,48 @@ export default function ConsultationPage() {
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setFormError(null);
+  }
+
+  function validateForm(): boolean {
+    if (!formData.name.trim() || formData.name.length > 100) {
+      setFormError('Please enter a valid name (1-100 characters)');
+      return false;
+    }
+    if (!formData.email.includes('@') || formData.email.length > 254) {
+      setFormError('Please enter a valid email address');
+      return false;
+    }
+    if (formData.phone && formData.phone.length > 50) {
+      setFormError('Phone number is too long');
+      return false;
+    }
+    if (formData.message && formData.message.length > 2000) {
+      setFormError('Message must be under 2000 characters');
+      return false;
+    }
+    return true;
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!validateForm()) return;
     setSubmitting(true);
     try {
-      const { error } = await supabase.from('consultations').insert({ ...formData, package_type: selectedPackage });
+      const { error } = await supabase.from('consultations').insert({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone?.trim() || null,
+        country: formData.country?.trim() || null,
+        vehicle_interest: formData.vehicle_interest?.trim() || null,
+        budget_range: formData.budget_range || null,
+        message: formData.message?.trim() || null,
+        package_type: selectedPackage,
+      });
       if (!error) setSubmitted(true);
+      else setFormError('Failed to book consultation. Please try again.');
     } catch {
-      // silent
+      setFormError('An unexpected error occurred. Please try again.');
     }
     setSubmitting(false);
   }
@@ -146,8 +179,13 @@ export default function ConsultationPage() {
         </div>
 
         {/* Booking form */}
-        <div className="bg-surface-900/50 border border-surface-800 rounded-2xl p-8 max-w-3xl">
+        <div className="bg-surface-900/50 border border-surface-800 rounded-2xl p-6 sm:p-8 max-w-3xl">
           <h2 className="text-lg font-semibold text-white mb-6">Your Details</h2>
+          {formError && (
+            <div className="mb-5 bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl text-sm">
+              {formError}
+            </div>
+          )}
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>

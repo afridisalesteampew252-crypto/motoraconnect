@@ -1,8 +1,27 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { Facebook, Instagram, Mail, Phone, MapPin, Clock, MessageCircle } from 'lucide-react';
 
 export default function Footer() {
+  const { t } = useTranslation();
   const year = new Date().getFullYear();
+
+  const quickLinks = [
+    { name: t('nav.home'), path: '/' },
+    { name: t('nav.vehicles'), path: '/vehicles' },
+    { name: t('nav.calculator'), path: '/calculator' },
+    { name: t('nav.auctionCheck'), path: '/auction-check' },
+    { name: t('nav.blog'), path: '/blog' },
+    { name: t('nav.contact'), path: '/contact' },
+  ];
+
+  const services = [
+    { name: t('footer.priceDatabase'), path: '/vehicles' },
+    { name: t('footer.importCalculator'), path: '/calculator' },
+    { name: t('footer.auctionVerification'), path: '/auction-check' },
+    { name: t('common.consultation'), path: '/consultation' },
+    { name: t('footer.exporterReferrals'), path: '/vehicles' },
+  ];
 
   return (
     <footer className="bg-surface-900 text-white">
@@ -13,7 +32,7 @@ export default function Footer() {
               Motoraconnect
             </h2>
             <p className="text-surface-400 text-sm leading-relaxed">
-              Helping you buy Japanese vehicles with confidence through honest advice, transparent pricing, and trusted referrals.
+              {t('footer.tagline')}
             </p>
             <div className="flex gap-4 pt-2">
               <a href="https://wa.me/15559072666" target="_blank" rel="noopener noreferrer" className="text-surface-500 hover:text-emerald-400 transition-colors" aria-label="WhatsApp"><MessageCircle size={20} /></a>
@@ -23,16 +42,9 @@ export default function Footer() {
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Quick Links</h3>
+            <h3 className="text-lg font-semibold">{t('footer.quickLinks')}</h3>
             <nav className="space-y-2.5">
-              {[
-                { name: 'Home', path: '/' },
-                { name: 'Vehicles', path: '/vehicles' },
-                { name: 'Calculator', path: '/calculator' },
-                { name: 'Auction Check', path: '/auction-check' },
-                { name: 'Blog', path: '/blog' },
-                { name: 'Contact', path: '/contact' },
-              ].map((link) => (
+              {quickLinks.map((link) => (
                 <Link key={link.path} to={link.path} className="block text-surface-400 hover:text-brand-300 transition-colors text-sm">
                   {link.name}
                 </Link>
@@ -41,15 +53,9 @@ export default function Footer() {
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Services</h3>
+            <h3 className="text-lg font-semibold">{t('footer.services')}</h3>
             <nav className="space-y-2.5">
-              {[
-                { name: 'Price Database', path: '/vehicles' },
-                { name: 'Import Calculator', path: '/calculator' },
-                { name: 'Auction Verification', path: '/auction-check' },
-                { name: 'Consultation', path: '/consultation' },
-                { name: 'Exporter Referrals', path: '/vehicles' },
-              ].map((link) => (
+              {services.map((link) => (
                 <Link key={link.path} to={link.path} className="block text-surface-400 hover:text-brand-300 transition-colors text-sm">
                   {link.name}
                 </Link>
@@ -58,7 +64,7 @@ export default function Footer() {
           </div>
 
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">Contact</h3>
+            <h3 className="text-lg font-semibold">{t('footer.contactInfo')}</h3>
             <div className="space-y-3">
               <div className="flex gap-3 items-start">
                 <MessageCircle size={16} className="text-emerald-400 mt-0.5 flex-shrink-0" />
@@ -89,11 +95,12 @@ export default function Footer() {
 
         <div className="border-t border-surface-800 pt-8">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p className="text-surface-500 text-sm">&copy; {year} Motoraconnect. All rights reserved.</p>
-            <p className="text-surface-600 text-sm">Made with passion for Japanese vehicles</p>
+            <p className="text-surface-500 text-sm">&copy; {year} Motoraconnect. {t('footer.copyright')}</p>
+            <p className="text-surface-600 text-sm">{t('footer.madeWith')}</p>
             <div className="flex gap-6 items-center">
-              <a href="#" className="text-surface-500 hover:text-brand-300 transition-colors text-sm">Privacy</a>
-              <a href="#" className="text-surface-500 hover:text-brand-300 transition-colors text-sm">Terms</a>
+              <Link to="/privacy" className="text-surface-500 hover:text-brand-300 transition-colors text-sm">{t('common.privacy')}</Link>
+              <Link to="/terms" className="text-surface-500 hover:text-brand-300 transition-colors text-sm">{t('common.terms')}</Link>
+              <Link to="/data-collection" className="text-surface-500 hover:text-brand-300 transition-colors text-sm">{t('common.dataCollection')}</Link>
             </div>
           </div>
         </div>

@@ -1,25 +1,27 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, LogIn, LogOut, User } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import NotificationDropdown from './Notifications/NotificationDropdown';
 import LanguageSwitcher from './LanguageSwitcher';
 
-const navLinks = [
-  { name: 'Home', path: '/' },
-  { name: 'Vehicles', path: '/vehicles' },
-  { name: 'Calculator', path: '/calculator' },
-  { name: 'Auction Check', path: '/auction-check' },
-  { name: 'Laws', path: '/laws' },
-  { name: 'Blog', path: '/blog' },
-  { name: 'Contact', path: '/contact' },
-];
-
 export default function Navbar() {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [hasScrolled, setHasScrolled] = useState(false);
   const location = useLocation();
   const { user, signOut } = useAuth();
+
+  const navLinks = [
+    { name: t('nav.home'), path: '/' },
+    { name: t('nav.vehicles'), path: '/vehicles' },
+    { name: t('nav.calculator'), path: '/calculator' },
+    { name: t('nav.auctionCheck'), path: '/auction-check' },
+    { name: t('nav.laws'), path: '/laws' },
+    { name: t('nav.blog'), path: '/blog' },
+    { name: t('nav.contact'), path: '/contact' },
+  ];
 
   useEffect(() => {
     const handleScroll = () => setHasScrolled(window.scrollY > 0);
@@ -94,17 +96,17 @@ export default function Navbar() {
               ) : (
                 <div className="flex items-center gap-2">
                   <Link
-                    to="/admin/login"
+                    to="/login"
                     className="inline-flex items-center gap-2 text-sm text-surface-400 hover:text-white border border-surface-700 px-3 py-1.5 rounded-lg hover:border-surface-600 transition-all duration-200"
                   >
                     <LogIn className="w-3.5 h-3.5" />
-                    Login
+                    {t('common.login')}
                   </Link>
                   <Link
                     to="/signup"
                     className="inline-flex items-center gap-2 text-sm bg-brand-500 text-white px-3 py-1.5 rounded-lg hover:bg-brand-400 transition-all duration-200"
                   >
-                    Sign Up
+                    {t('common.signup')}
                   </Link>
                 </div>
               )}
@@ -112,7 +114,7 @@ export default function Navbar() {
                 to="/consultation"
                 className="inline-flex items-center gap-2 bg-white text-surface-900 font-semibold text-sm px-4 py-2 rounded-lg hover:bg-surface-100 transition-colors"
               >
-                Book Consultation
+                {t('common.bookConsultation')}
               </Link>
             </div>
 
@@ -166,7 +168,7 @@ export default function Navbar() {
                 onClick={() => setIsOpen(false)}
                 className="mt-4 bg-white text-surface-900 font-semibold text-center py-3 px-4 rounded-xl hover:bg-surface-100 transition-colors"
               >
-                Book Consultation
+                {t('common.bookConsultation')}
               </Link>
               {user ? (
                 <div className="flex items-center justify-between mt-3 pt-3 border-t border-surface-800">
@@ -188,12 +190,12 @@ export default function Navbar() {
                 </div>
               ) : (
                 <Link
-                  to="/admin/login"
+                  to="/login"
                   onClick={() => setIsOpen(false)}
                   className="flex items-center justify-center gap-2 mt-3 pt-3 border-t border-surface-800 text-sm text-surface-400 hover:text-white transition-colors"
                 >
                   <LogIn className="w-4 h-4" />
-                  Admin Login
+                  Login
                 </Link>
               )}
             </div>

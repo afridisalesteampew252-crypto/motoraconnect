@@ -21,19 +21,48 @@ export default function ContactPage() {
   const [formData, setFormData] = useState({ name: '', email: '', subject: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    setFormError(null);
+  }
+
+  function validateForm(): boolean {
+    if (!formData.name.trim() || formData.name.length > 100) {
+      setFormError('Please enter a valid name (1-100 characters)');
+      return false;
+    }
+    if (!formData.email.includes('@') || formData.email.length > 254) {
+      setFormError('Please enter a valid email address');
+      return false;
+    }
+    if (formData.subject && formData.subject.length > 200) {
+      setFormError('Subject must be under 200 characters');
+      return false;
+    }
+    if (!formData.message.trim() || formData.message.length > 5000) {
+      setFormError('Please enter a message (1-5000 characters)');
+      return false;
+    }
+    return true;
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!validateForm()) return;
     setSubmitting(true);
     try {
-      const { error } = await supabase.from('contacts').insert(formData);
+      const { error } = await supabase.from('contacts').insert({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        subject: formData.subject.trim(),
+        message: formData.message.trim(),
+      });
       if (!error) setSubmitted(true);
+      else setFormError('Failed to send message. Please try again.');
     } catch {
-      // silent
+      setFormError('An unexpected error occurred. Please try again.');
     }
     setSubmitting(false);
   }
@@ -99,6 +128,11 @@ export default function ContactPage() {
             ) : (
               <div className="bg-surface-900/50 border border-surface-800 rounded-2xl p-6 sm:p-8">
                 <h2 className="text-lg font-semibold text-white mb-6">Send a Message</h2>
+                {formError && (
+                  <div className="mb-5 bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-xl text-sm">
+                    {formError}
+                  </div>
+                )}
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>

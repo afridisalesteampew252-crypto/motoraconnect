@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { ArrowRight, Terminal, Zap, Globe } from 'lucide-react';
 
 export default function Hero() {
+  const { t } = useTranslation();
+
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden bg-surface-950">
       {/* Subtle grid */}
@@ -35,16 +38,16 @@ export default function Hero() {
           {/* Heading */}
           <div className="space-y-6">
             <h1 className="text-5xl sm:text-6xl lg:text-8xl font-display font-extrabold leading-[0.95] tracking-tight">
-              <span className="block text-white">Import cars</span>
-              <span className="block text-white">from Japan</span>
+              <span className="block text-white">{t('home.heroTitle1')}</span>
+              <span className="block text-white">{t('home.heroTitle2')}</span>
               <span className="block bg-gradient-to-r from-emerald-400 via-brand-400 to-cyan-400 bg-clip-text text-transparent">
-                like a pro.
+                {t('home.heroTitle3')}
               </span>
             </h1>
 
             <div className="max-w-xl space-y-4">
               <p className="text-surface-400 text-lg sm:text-xl leading-relaxed font-light">
-                The smart platform that connects you to Japanese vehicle auctions with transparent pricing, verified data, and expert guidance.
+                {t('home.heroSubtitle')}
               </p>
 
               {/* Code-style feature list */}
@@ -52,17 +55,17 @@ export default function Hero() {
                 <div className="flex items-center gap-2">
                   <span className="text-surface-600">01</span>
                   <Zap className="w-3 h-3 text-emerald-400" />
-                  <span className="text-surface-300">Real-time auction data & pricing</span>
+                  <span className="text-surface-300">{t('home.feature1')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-surface-600">02</span>
                   <Globe className="w-3 h-3 text-brand-400" />
-                  <span className="text-surface-300">Import calculators for 30+ countries</span>
+                  <span className="text-surface-300">{t('home.feature2')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-surface-600">03</span>
                   <Terminal className="w-3 h-3 text-cyan-400" />
-                  <span className="text-surface-300">Expert consultation & verified exporters</span>
+                  <span className="text-surface-300">{t('home.feature3')}</span>
                 </div>
               </div>
             </div>
@@ -71,20 +74,20 @@ export default function Hero() {
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row items-start gap-4 pt-2">
             <Link to="/vehicles" className="group inline-flex items-center gap-2 bg-white text-surface-900 font-semibold px-6 py-3.5 rounded-xl hover:bg-surface-100 transition-all duration-200 shadow-lg shadow-white/5">
-              Browse Vehicles
+              {t('home.browseVehicles')}
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
             </Link>
             <Link to="/calculator" className="group inline-flex items-center gap-2 bg-surface-800/50 border border-surface-700 text-surface-300 font-medium px-6 py-3.5 rounded-xl hover:bg-surface-800 hover:border-surface-600 transition-all duration-200 backdrop-blur-sm">
-              Calculate Import Cost
+              {t('home.calculateImport')}
             </Link>
           </div>
 
           {/* Stats bar */}
           <div className="flex flex-wrap items-center gap-8 pt-8 border-t border-surface-800/50">
             {[
-              { value: '500+', label: 'Vehicles' },
-              { value: '30+', label: 'Countries' },
-              { value: '98%', label: 'Satisfaction' },
+              { value: '500+', label: t('home.statVehicles') },
+              { value: '30+', label: t('home.statCountries') },
+              { value: '98%', label: t('home.statSatisfaction') },
             ].map((stat) => (
               <div key={stat.label} className="flex items-baseline gap-2">
                 <span className="text-2xl sm:text-3xl font-display font-bold text-white">{stat.value}</span>

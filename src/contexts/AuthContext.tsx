@@ -63,17 +63,38 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   async function signIn(email: string, password: string) {
+    // Input validation
+    if (!email || !password) {
+      return { error: 'Email and password are required' };
+    }
+    if (!email.includes('@') || email.length > 254) {
+      return { error: 'Please enter a valid email address' };
+    }
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     return { error: error?.message ?? null };
   }
 
   async function signUp(email: string, password: string, fullName: string) {
+    // Input validation
+    if (!email || !password || !fullName) {
+      return { error: 'All fields are required' };
+    }
+    if (!email.includes('@') || email.length > 254) {
+      return { error: 'Please enter a valid email address' };
+    }
+    if (password.length < 8) {
+      return { error: 'Password must be at least 8 characters' };
+    }
+    if (fullName.trim().length < 2 || fullName.length > 100) {
+      return { error: 'Please enter a valid name' };
+    }
+
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
         data: {
-          full_name: fullName,
+          full_name: fullName.trim(),
         },
       },
     });

@@ -10,6 +10,9 @@ import BlogPage from './pages/BlogPage';
 import BlogPostPage from './pages/BlogPostPage';
 import ConsultationPage from './pages/ConsultationPage';
 import ContactPage from './pages/ContactPage';
+import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
+import TermsOfServicePage from './pages/TermsOfServicePage';
+import DataCollectionPage from './pages/DataCollectionPage';
 import UserDashboardPage from './pages/Dashboard/DashboardPage';
 import MessagesPage from './pages/Messaging/MessagesPage';
 import ChatPage from './pages/Messaging/ChatPage';
@@ -68,6 +71,9 @@ export default function App() {
             <Route path="/blog/:slug" element={<BlogPostPage />} />
             <Route path="/consultation" element={<ConsultationPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/privacy" element={<PrivacyPolicyPage />} />
+            <Route path="/terms" element={<TermsOfServicePage />} />
+            <Route path="/data-collection" element={<DataCollectionPage />} />
             <Route 
               path="/dashboard" 
               element={
